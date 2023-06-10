@@ -21,9 +21,7 @@ function M.setup()
 
   vim.opt.mouse = "a"
   vim.opt.mousemoveevent = true
-  vim.opt.clipboard = {
-    "unnamedplus",
-  }
+  vim.opt.clipboard = { "unnamedplus" }
 
   vim.opt.updatetime = 100
   vim.opt.redrawtime = 1500
@@ -83,7 +81,6 @@ function M.setup()
   vim.opt.shortmess:append("cmsW")
 
   vim.opt.pumheight = 10
-  vim.opt.winblend = 17
   vim.opt.winfixheight = true
   vim.opt.winfixwidth = true
   vim.opt.winaltkeys = "no"
@@ -154,9 +151,11 @@ function M.setup()
     "buffers",
     "curdir",
     "folds",
+    "globals",
     "help",
     "winsize",
     "winpos",
+    "tabpages",
     "terminal",
   }
 
@@ -176,7 +175,8 @@ function M.setup()
   vim.opt.guifont = string.format("%s:h%d", "Console", 11)
 
   vim.opt.splitkeep = "screen"
+
+  vim.opt.swapfile = false
 end
 
 return M
-

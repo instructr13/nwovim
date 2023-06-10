@@ -139,3 +139,15 @@ end
 keymap("n", "<leader>lI", function()
   vim.cmd("LspInfo")
 end, "LSP Information", { silent = true })
+
+keymap("n", "gl", function()
+  vim.diagnostic.open_float()
+end, "Show diagnostics in a floating window")
+
+keymap("n", "[d", function()
+  vim.diagnostic.goto_prev()
+end, "Move to the previous diagnostic")
+
+keymap("n", "]d", function()
+  vim.diagnostic.goto_next()
+end, "Move to the next diagnostic")

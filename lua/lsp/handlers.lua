@@ -42,12 +42,24 @@ local function on_attach(client, buffer)
   end
 
   if cap["definitionProvider"] then
+    local function definition()
+      local ok, trouble = pcall(require, "trouble")
+
+      if not ok then
+        vim.lsp.buf.definition()
+
+        return
+      end
+
+      trouble.toggle("lsp_definitions")
+    end
+
     command("LspDefinition", function()
-      vim.lsp.buf.definition()
+      definition()
     end, "Go To Defenition")
 
     keymap("gd", function()
-      vim.lsp.buf.definition()
+      definition()
     end, "Go To Definition")
   end
 
@@ -62,12 +74,24 @@ local function on_attach(client, buffer)
   end
 
   if cap["typeDefinitionProvider"] then
+    local function type_definition()
+      local ok, trouble = pcall(require, "trouble")
+
+      if not ok then
+        vim.lsp.buf.type_definition()
+
+        return
+      end
+
+      trouble.toggle("lsp_type_definitions")
+    end
+
     command("LspTypeDefinition", function()
-      vim.lsp.buf.type_definition()
+      type_definition()
     end, "Go To Type Definition")
 
     keymap("go", function()
-      vim.lsp.buf.type_definition()
+      type_definition()
     end, "Go To Type Definition")
   end
 
@@ -82,12 +106,24 @@ local function on_attach(client, buffer)
   end
 
   if cap["referencesProvider"] then
+    local function references()
+      local ok, trouble = pcall(require, "trouble")
+
+      if not ok then
+        vim.lsp.buf.references()
+
+        return
+      end
+
+      trouble.toggle("lsp_references")
+    end
+
     command("LspReferences", function()
-      vim.lsp.buf.references()
+      references()
     end, "Go To References")
 
     keymap("gR", function()
-      vim.lsp.buf.references()
+      references()
     end, "Go To References")
 
     keymap("<a-n>", function()

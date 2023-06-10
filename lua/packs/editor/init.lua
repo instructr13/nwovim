@@ -11,7 +11,29 @@ return {
 
     event = { "BufReadPre", "BufNewFile" },
 
-    init = C.matchup_setup
+    init = function()
+      C.matchup_setup()
+    end
+  },
+  {
+    -- improve word jump
+    "chrisgrieser/nvim-spider",
+
+    lazy = true,
+
+    init = function()
+      C.spider_setup()
+    end
+  },
+  {
+    -- colorcolumn
+    "Bekaboo/deadcolumn.nvim",
+
+    event = { "BufReadPre", "CursorMoved" },
+
+    opts = {
+      "cursor"
+    }
   },
   {
     "altermo/ultimate-autopair.nvim",

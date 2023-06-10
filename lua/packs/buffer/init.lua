@@ -2,6 +2,11 @@ local keymap = require("utils.keymap").keymap
 
 return {
   {
+    "tiagovla/scope.nvim",
+
+    opts = { restore_state = true }
+  },
+  {
     "echasnovski/mini.bufremove",
 
     lazy = true,

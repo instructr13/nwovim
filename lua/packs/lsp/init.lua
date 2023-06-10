@@ -4,7 +4,11 @@ return {
   {
     "neovim/nvim-lspconfig",
 
-    lazy = true
+    lazy = true,
+
+    config = function()
+      require("lspconfig.ui.windows").default_options.border = "rounded"
+    end
   },
   {
     "williamboman/mason.nvim",
@@ -62,6 +66,8 @@ return {
   {
     "j-hui/fidget.nvim",
 
+    tag = "legacy",
+
     event = { "LspAttach" },
 
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -75,10 +81,14 @@ return {
     }
   },
   {
-    "hrsh7th/nvim-linkedit",
+    "folke/trouble.nvim",
 
-    event = { "LspAttach" },
+    lazy = true,
 
-    opts = {}
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+
+    opts = {
+      use_diagnostic_signs = true
+    }
   }
 }

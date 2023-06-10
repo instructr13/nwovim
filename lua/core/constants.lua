@@ -37,17 +37,11 @@ local quit_with_q = {
     "quickfix",
   },
   filetypes = {
-    --help
-    "help",
-
     -- vim-dadbod
     "dbout",
 
     -- lsp
     "lspinfo",
-
-    -- vim-startuptime
-    "startuptime",
   },
 }
 
@@ -72,4 +66,3 @@ M.window = {
 }
 
 return M
-

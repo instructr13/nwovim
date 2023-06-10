@@ -43,6 +43,12 @@ return {
           DiagnosticUnderlineHint = {
             fg = "NONE",
           },
+          IndentBlanklineContextChar = {
+            fg = "#f5bde6"
+          },
+          IndentBlanklineContextStart = {
+            sp = "#f5bde6"
+          }
         }
       end,
       integrations = {
@@ -52,6 +58,7 @@ return {
         neotree = true,
         neotest = true,
         noice = true,
+        headlines = true,
         cmp = true,
         fidget = true,
         dap = {
@@ -203,6 +210,7 @@ return {
 
     opts = {
       icons = {
+        enable = true,
         ui = {
           bar = {
             separator = "  ",
@@ -210,7 +218,7 @@ return {
           },
           menu = {
             separator = " ",
-            indicator = "",
+            indicator = ""
           },
         },
       }
@@ -236,10 +244,19 @@ return {
     end
   },
   {
+    "lewis6991/satellite.nvim",
+
+    event = { "BufReadPost", "BufNewFile" },
+
+    opts = {
+      excluded_filetypes = { "neo-tree" }
+    }
+  },
+  {
     -- Statuscolumn added by NVIM-0.9
     "luukvbaal/statuscol.nvim",
 
-    event = { "VeryLazy" },
+    event = { "UIEnter" },
 
     config = function()
       C.statuscol()
@@ -252,6 +269,19 @@ return {
 
     opts = {
       show_warnings = false
+    }
+  },
+  {
+    "lukas-reineke/indent-blankline.nvim",
+
+    event = { "BufReadPost", "BufNewFile" },
+
+    opts = {
+      char = "▏",
+      context_char = "▏",
+      show_current_context = true,
+      show_current_context_start = true,
+      show_first_indent_level = false,
     }
   }
 }

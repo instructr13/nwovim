@@ -30,7 +30,7 @@ function M.format_setup()
 
         vim.cmd("cabbrev wq execute 'Format sync' <bar> wq")
 
-        keymap("<leader>lf", function()
+        keymap("<F3>", function()
           require("lsp-format").format()
         end, "Format")
       end

@@ -157,7 +157,7 @@ function M.statuscol()
   local builtin = require("statuscol.builtin")
 
   require("statuscol").setup {
-    bt_ignore = { "terminal" },
+    bt_ignore = { "nofile", "terminal" },
     relculright = true,
     segments = {
       {
@@ -523,6 +523,13 @@ function M.statusline()
 
       self.ok = self.errors + self.warnings + self.info + self.hints == 0
     end,
+
+    on_click = {
+      callback = function()
+        require("trouble").toggle({ mode = "document_diagnostics" })
+      end,
+      name = "heirline_diagnostics"
+    },
 
     Separator,
     {
@@ -972,40 +979,9 @@ function M.statusline()
 
   Right = utils.insert(Right, FileSize)
 
-  local ScrollBar = {
-    static = {
-      segments = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" }
-    },
-
-    update = "CursorMoved",
-
-    provider = function(self)
-      local current_lnum = vim.api.nvim_win_get_cursor(0)[1]
-      local total_lines = vim.api.nvim_buf_line_count(0)
-      local i = math.floor((current_lnum - 1) / total_lines * #self.segments) + 1
-
-      return self.segments[i]:rep(2)
-    end,
-
-    hl = { fg = "green", bg = "bright_bg" }
-  }
-
   local Ruler = {
     update = { "CursorMoved", "TextChanged" },
 
-    {
-      provider = "%3p"
-    },
-    {
-      provider = "%%",
-
-      hl = { fg = "surface1" }
-    },
-    {
-      provider = ", ",
-
-      hl = { fg = "surface1" }
-    },
     {
       provider = " ",
 
@@ -1026,12 +1002,44 @@ function M.statusline()
       provider = "LOC",
 
       hl = { fg = "surface1" }
+    },
+    {
+      provider = ", ",
+
+      hl = { fg = "surface1" }
+    },
+    {
+      provider = "%3p"
+    },
+    {
+      provider = "%%",
+
+      hl = { fg = "surface1" }
     }
   }
 
-  Right = utils.insert(Right, Separator, ScrollBar, Space, Ruler)
 
-  statusline = utils.insert(statusline, Right, Space)
+  Right = utils.insert(Right, Separator, Ruler)
+
+  local ScrollBar = {
+    static = {
+      segments = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" }
+    },
+
+    update = "CursorMoved",
+
+    provider = function(self)
+      local current_lnum = vim.api.nvim_win_get_cursor(0)[1]
+      local total_lines = vim.api.nvim_buf_line_count(0)
+      local i = math.floor((current_lnum - 1) / total_lines * #self.segments) + 1
+
+      return self.segments[i]:rep(2)
+    end,
+
+    hl = { fg = "green", bg = "bright_bg" }
+  }
+
+  statusline = utils.insert(statusline, Right, Space, ScrollBar)
 
   heirline.setup {
     statusline = statusline
