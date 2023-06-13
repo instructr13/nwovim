@@ -5,7 +5,7 @@ return {
   {
     "folke/neodev.nvim",
 
-    lazy = true
+    lazy = true,
   },
   -- Markdown
   {
@@ -15,7 +15,7 @@ return {
 
     init = function()
       C.tsnode_marker_setup()
-    end
+    end,
   },
   {
     "lukas-reineke/headlines.nvim",
@@ -24,6 +24,6 @@ return {
 
     dependencies = "nvim-treesitter/nvim-treesitter",
 
-    opts = {}
-  }
+    opts = {},
+  },
 }

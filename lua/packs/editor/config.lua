@@ -2,7 +2,7 @@ local M = {}
 
 function M.matchup_setup()
   vim.g.matchup_matchparen_offscreen = {
-    method = "scrolloff"
+    method = "scrolloff",
   }
 
   vim.g.matchup_matchparen_defferred = 1

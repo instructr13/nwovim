@@ -37,13 +37,25 @@ function M.omit(behavior, mode, omit_key, omit_opts)
     return function(key, action, desc, opts)
       opts = opts or {}
 
-      M.keymap(mode, omit_key .. key, action, desc, vim.tbl_deep_extend("force", omit_opts, opts))
+      M.keymap(
+        mode,
+        omit_key .. key,
+        action,
+        desc,
+        vim.tbl_deep_extend("force", omit_opts, opts)
+      )
     end
   elseif behavior == "prepend" then
     return function(key, action, desc, opts)
       opts = opts or {}
 
-      M.keymap(mode, key .. omit_key, action, desc, vim.tbl_deep_extend("force", omit_opts, opts))
+      M.keymap(
+        mode,
+        key .. omit_key,
+        action,
+        desc,
+        vim.tbl_deep_extend("force", omit_opts, opts)
+      )
     end
   elseif behavior == "insert" then
     return function(key_to_insert, action, desc, opts)
@@ -51,13 +63,25 @@ function M.omit(behavior, mode, omit_key, omit_opts)
 
       opts = opts or {}
 
-      M.keymap(mode, key, action, desc, vim.tbl_deep_extend("force", omit_opts, opts))
+      M.keymap(
+        mode,
+        key,
+        action,
+        desc,
+        vim.tbl_deep_extend("force", omit_opts, opts)
+      )
     end
   elseif behavior == "remove" then
     return function(_, _, desc, opts)
       opts = opts or {}
 
-      M.keymap(mode, omit_key, "", desc, vim.tbl_deep_extend("force", omit_opts, opts))
+      M.keymap(
+        mode,
+        omit_key,
+        "",
+        desc,
+        vim.tbl_deep_extend("force", omit_opts, opts)
+      )
     end
   else
     error("Unknown behavior: " .. tostring(behavior))

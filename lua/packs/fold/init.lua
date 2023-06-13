@@ -5,18 +5,24 @@ return {
     event = { "BufReadPost", "BufNewFile" },
 
     dependencies = {
-      "kevinhwang91/promise-async"
+      "kevinhwang91/promise-async",
     },
 
     opts = {
       preview = {
         win_config = {
           border = require("utils.border").get_border_chars("rounded"),
-          winblend = 0
-        }
+          winblend = 0,
+        },
       },
       close_fold_kinds = { "comment", "imports" },
-      fold_virt_text_handler = function(virtual_text, lnum, endlnum, width, truncate)
+      fold_virt_text_handler = function(
+        virtual_text,
+        lnum,
+        endlnum,
+        width,
+        truncate
+      )
         local new_virtual_text = {}
         local foldlnum = endlnum - lnum
         local suffix = (" %s %d lines"):format("", foldlnum)
@@ -43,7 +49,8 @@ return {
             chunk_width = vim.fn.strdisplaywidth(chunk_text)
 
             if cursor_width + chunk_width < target_width then
-              suffix = suffix .. (" "):rep(target_width - cursor_width - chunk_width)
+              suffix = suffix
+                .. (" "):rep(target_width - cursor_width - chunk_width)
             end
 
             break
@@ -59,6 +66,6 @@ return {
 
         return new_virtual_text
       end,
-    }
-  }
+    },
+  },
 }

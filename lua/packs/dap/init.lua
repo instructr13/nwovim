@@ -5,7 +5,7 @@ return {
     lazy = true,
 
     dependencies = {
-      "mfussenegger/nvim-dap"
-    }
-  }
+      "mfussenegger/nvim-dap",
+    },
+  },
 }

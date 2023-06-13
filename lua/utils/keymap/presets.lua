@@ -21,4 +21,3 @@ function M.localleader(mode, prefix, opts)
 end
 
 return M
-

@@ -13,7 +13,7 @@ return {
 
     init = function()
       C.matchup_setup()
-    end
+    end,
   },
   {
     -- improve word jump
@@ -23,7 +23,7 @@ return {
 
     init = function()
       C.spider_setup()
-    end
+    end,
   },
   {
     -- colorcolumn
@@ -32,8 +32,8 @@ return {
     event = { "BufReadPre", "CursorMoved" },
 
     opts = {
-      "cursor"
-    }
+      "cursor",
+    },
   },
   {
     "altermo/ultimate-autopair.nvim",

@@ -5,7 +5,7 @@ local fn = vim.fn
 local fsize = require("utils.fsize")
 
 function M.notify()
-  require("notify").setup {
+  require("notify").setup({
     background_colour = function()
       local group_bg = fn.synIDattr(fn.synIDtrans(fn.hlID("Normal")), "bg#")
 
@@ -18,8 +18,8 @@ function M.notify()
       end
 
       return group_bg
-    end
-  }
+    end,
+  })
 
   -- require("utils.telescope").register_extension("notify")
 end
@@ -50,7 +50,7 @@ function M.bufferline()
       end,
       right_mouse_command = "vertical sbuffer %d",
       indicator = {
-        style = "underline"
+        style = "underline",
       },
       diagnostics = "nvim_lsp",
       diagnostics_update_in_insert = true,
@@ -84,7 +84,10 @@ function M.bufferline()
         },
       },
       get_element_icon = function(element)
-        local icon, hl = require("nvim-web-devicons").get_icon_by_filetype(element.filetype, { default = false })
+        local icon, hl = require("nvim-web-devicons").get_icon_by_filetype(
+          element.filetype,
+          { default = false }
+        )
 
         return icon, hl
       end,
@@ -134,11 +137,11 @@ end
 
 function M.barbecue()
   -- opts field won't work properly, so we have to call setup() in config
-  require("barbecue").setup {
+  require("barbecue").setup({
     attach_navic = false, -- will be attached by lsp on_attach
     create_autocmd = false,
-    theme = "catppuccin"
-  }
+    theme = "catppuccin",
+  })
 
   vim.api.nvim_create_autocmd({
     "WinResized",
@@ -151,71 +154,6 @@ function M.barbecue()
       require("barbecue.ui").update()
     end,
   })
-end
-
-function M.statuscol()
-  local builtin = require("statuscol.builtin")
-
-  require("statuscol").setup {
-    bt_ignore = { "nofile", "terminal" },
-    relculright = true,
-    segments = {
-      {
-        sign = {
-          name = { "DapBreakpoint" },
-          maxwidth = 1,
-          colwidth = 1,
-          click = builtin.toggle_breakpoint
-        }
-      },
-      {
-        sign = {
-          name = { "Diagnostic" },
-          maxwidth = 1,
-          colwidth = 2
-        },
-        click = "v:lua.ScSa"
-      },
-      {
-        sign = {
-          name = { ".*" }, -- table of lua patterns to match the sign name against
-          auto = true,
-          wrap = true
-        }
-      },
-      {
-        text = { builtin.lnumfunc, " " },
-        click = "v:lua.ScLa"
-      },
-      {
-        sign = {
-          name = { "GitSigns.*" },
-        },
-        click = "v:lua.ScSa"
-      },
-      {
-        text = { builtin.foldfunc },
-        click = "v:lua.ScFa"
-      },
-      { text = { " " } },
-      {
-        sign = {
-          name = { "LightbulbSign" },
-          maxwidth = 1,
-          colwidth = 1,
-        },
-        click = "v:lua.ScSa"
-      },
-      { text = { " │" } }
-    },
-    clickhandlers = {
-      LightbulbSign = function(args)
-        if args.button == "l" then
-          vim.lsp.buf.code_action()
-        end
-      end
-    }
-  }
 end
 
 function M.statusline()
@@ -243,7 +181,7 @@ function M.statusline()
     diag_dark_hint = utils.get_highlight("DiagnosticVirtualTextHint").bg,
     git_del = utils.get_highlight("diffDeleted").fg,
     git_add = utils.get_highlight("diffAdded").fg,
-    git_change = utils.get_highlight("diffChanged").fg
+    git_change = utils.get_highlight("diffChanged").fg,
   })
 
   heirline.load_colors(colors)
@@ -251,8 +189,8 @@ function M.statusline()
   local statusline = {
     hl = {
       fg = "gray",
-      bg = "mantle"
-    }
+      bg = "mantle",
+    },
   }
 
   -- Utilities
@@ -264,7 +202,9 @@ function M.statusline()
 
   local LSPActive = {
     condition = function()
-      return not conditions.buffer_matches({ buftype = { "nofile", "quickfix", "help", "terminal" } })
+      return not conditions.buffer_matches({
+        buftype = { "nofile", "quickfix", "help", "terminal" },
+      })
     end,
 
     update = { "LspAttach", "LspDetach" },
@@ -274,10 +214,10 @@ function M.statusline()
     on_click = {
       callback = function()
         vim.defer_fn(function()
-          vim.cmd "LspInfo"
+          vim.cmd("LspInfo")
         end, 100)
       end,
-      name = "heirline_lspinfo"
+      name = "heirline_lspinfo",
     },
 
     hl = function()
@@ -286,7 +226,7 @@ function M.statusline()
       end
 
       return { fg = "surface1", bg = "mantle" }
-    end
+    end,
   }
 
   Left = utils.insert(Left, LSPActive)
@@ -319,18 +259,24 @@ function M.statusline()
     end,
     init = function(self)
       self.filetype = vim.bo.filetype
-    end
+    end,
   }
 
   local FileIcon = {
     condition = function()
-      return not conditions.buffer_matches({ buftype = { "nofile", "quickfix", "help", "terminal" } })
+      return not conditions.buffer_matches({
+        buftype = { "nofile", "quickfix", "help", "terminal" },
+      })
     end,
 
     init = function(self)
       local filetype = self.filetype
 
-      self.icon, self.icon_color = require("nvim-web-devicons").get_icon_color_by_filetype(filetype, { default = true })
+      self.icon, self.icon_color =
+        require("nvim-web-devicons").get_icon_color_by_filetype(
+          filetype,
+          { default = true }
+        )
     end,
 
     provider = function(self)
@@ -339,9 +285,9 @@ function M.statusline()
 
     hl = function(self)
       return {
-        fg = self.icon_color
+        fg = self.icon_color,
       }
-    end
+    end,
   }
 
   local FileType = {
@@ -353,7 +299,7 @@ function M.statusline()
 
     provider = function(self)
       return string.gsub(" " .. self.filetype, "%W%l", string.upper):sub(2)
-    end
+    end,
   }
 
   local FileFlags = {
@@ -369,21 +315,23 @@ function M.statusline()
         local fg = vim.bo.modified and "green" or "surface1"
 
         return { fg = fg }
-      end
+      end,
     },
     {
       update = { "BufReadPost", "BufNewFile" },
 
       provider = "",
       hl = function()
-        local fg = (not vim.bo.modifiable or vim.bo.readonly) and "orange" or "surface1"
+        local fg = (not vim.bo.modifiable or vim.bo.readonly) and "orange"
+          or "surface1"
 
         return { fg = fg }
-      end
-    }
+      end,
+    },
   }
 
-  FileInformationBlock = utils.insert(FileInformationBlock,
+  FileInformationBlock = utils.insert(
+    FileInformationBlock,
     Space,
     FileIcon,
     FileType,
@@ -409,41 +357,45 @@ function M.statusline()
           idx = idx + 1
         end
       end
-    end
+    end,
   }
 
   local QuickFixIcon = {
     provider = "  ",
 
-    hl = { fg = "green" }
+    hl = { fg = "green" },
   }
 
   local QuickFixText = {
     {
-      provider = "QF"
+      provider = "QF",
     },
     {
       provider = "  ",
 
-      hl = { fg = "overlay0" }
+      hl = { fg = "overlay0" },
     },
     {
       provider = function(self)
         local idx = fn.getqflist({ idx = 0 }).idx
 
-        if #self.qflist > 0 and idx ~= nil and self.qflist[idx]["_idx"] ~= nil then
+        if
+          #self.qflist > 0
+          and idx ~= nil
+          and self.qflist[idx]["_idx"] ~= nil
+        then
           return self.qflist[idx]["_idx"]
         else
           return 0
         end
       end,
 
-      hl = { bold = true }
+      hl = { bold = true },
     },
     {
       provider = " of ",
 
-      hl = { fg = "overlay0" }
+      hl = { fg = "overlay0" },
     },
     {
       provider = function(self)
@@ -460,7 +412,7 @@ function M.statusline()
         return count
       end,
 
-      hl = { bold = true }
+      hl = { bold = true },
     },
     {
       condition = function(self)
@@ -468,7 +420,10 @@ function M.statusline()
 
         if #self.qflist > 0 then
           for _, t in ipairs(self.qflist) do
-            if t.valid == 1 and #self.buffers == 0 or t.valid == 1 and self.buffers[#self.buffers] ~= t.bufnr then
+            if
+              t.valid == 1 and #self.buffers == 0
+              or t.valid == 1 and self.buffers[#self.buffers] ~= t.bufnr
+            then
               table.insert(self.buffers, t.bufnr)
             end
           end
@@ -480,24 +435,25 @@ function M.statusline()
       {
         provider = " in ",
 
-        hl = { fg = "overlay0" }
+        hl = { fg = "overlay0" },
       },
       {
         provider = function(self)
           return #self.buffers .. " "
-        end
+        end,
       },
       {
         provider = function(self)
           return "file" .. (#self.buffers > 1 and "s" or "")
         end,
 
-        hl = { fg = "overlay0" }
-      }
-    }
+        hl = { fg = "overlay0" },
+      },
+    },
   }
 
-  QuickFixBlock = utils.insert(QuickFixBlock, QuickFixIcon, QuickFixText, Separator)
+  QuickFixBlock =
+    utils.insert(QuickFixBlock, QuickFixIcon, QuickFixText, Separator)
   Left = utils.insert(Left, QuickFixBlock)
 
   local Diagnostics = {
@@ -512,14 +468,18 @@ function M.statusline()
       warn_icon = " ",
       info_icon = " ",
       hint_icon = " ",
-      ok_icon = " "
+      ok_icon = " ",
     },
 
     init = function(self)
-      self.errors, self.error_lnum = get_diagnostic_object(vim.diagnostic.severity.ERROR)
-      self.warnings, self.warn_lnum = get_diagnostic_object(vim.diagnostic.severity.WARN)
-      self.info, self.info_lnum = get_diagnostic_object(vim.diagnostic.severity.INFO)
-      self.hints, self.hint_lnum = get_diagnostic_object(vim.diagnostic.severity.HINT)
+      self.errors, self.error_lnum =
+        get_diagnostic_object(vim.diagnostic.severity.ERROR)
+      self.warnings, self.warn_lnum =
+        get_diagnostic_object(vim.diagnostic.severity.WARN)
+      self.info, self.info_lnum =
+        get_diagnostic_object(vim.diagnostic.severity.INFO)
+      self.hints, self.hint_lnum =
+        get_diagnostic_object(vim.diagnostic.severity.HINT)
 
       self.ok = self.errors + self.warnings + self.info + self.hints == 0
     end,
@@ -528,7 +488,7 @@ function M.statusline()
       callback = function()
         require("trouble").toggle({ mode = "document_diagnostics" })
       end,
-      name = "heirline_diagnostics"
+      name = "heirline_diagnostics",
     },
 
     Separator,
@@ -552,17 +512,17 @@ function M.statusline()
             return create_arrow(self.error_lnum)
           end,
 
-          hl = { fg = "diag_dark_error" }
+          hl = { fg = "diag_dark_error" },
         },
         {
           provider = function(self)
             return self.error_lnum
           end,
 
-          hl = { fg = "diag_error" }
-        }
+          hl = { fg = "diag_error" },
+        },
       },
-      Space
+      Space,
     },
     {
       provider = function(self)
@@ -584,17 +544,17 @@ function M.statusline()
             return create_arrow(self.warn_lnum)
           end,
 
-          hl = { fg = "diag_dark_warn" }
+          hl = { fg = "diag_dark_warn" },
         },
         {
           provider = function(self)
             return self.warn_lnum
           end,
 
-          hl = { fg = "diag_warn" }
-        }
+          hl = { fg = "diag_warn" },
+        },
       },
-      Space
+      Space,
     },
     {
       condition = function(self)
@@ -616,16 +576,16 @@ function M.statusline()
           return create_arrow(self.info_lnum)
         end,
 
-        hl = { fg = "diag_dark_info" }
+        hl = { fg = "diag_dark_info" },
       },
       {
         provider = function(self)
           return self.info_lnum
         end,
 
-        hl = { fg = "diag_info" }
+        hl = { fg = "diag_info" },
       },
-      Space
+      Space,
     },
     {
       provider = function(self)
@@ -647,19 +607,19 @@ function M.statusline()
             return create_arrow(self.hint_lnum)
           end,
 
-          hl = { fg = "diag_dark_hint" }
+          hl = { fg = "diag_dark_hint" },
         },
         {
           provider = function(self)
             return self.hint_lnum
           end,
 
-          hl = { fg = "diag_hint" }
-        }
+          hl = { fg = "diag_hint" },
+        },
       },
       {
-        provider = " "
-      }
+        provider = " ",
+      },
     },
     {
       provider = function(self)
@@ -669,9 +629,9 @@ function M.statusline()
         local fg = (self.ok and vim.bo.buftype == "") and "green" or "surface1"
 
         return { fg = fg }
-      end
+      end,
     },
-    Separator
+    Separator,
   }
 
   Left = utils.insert(Left, Diagnostics)
@@ -681,12 +641,12 @@ function M.statusline()
       return vim.bo.buftype == "terminal"
     end,
 
-    update = "TermOpen"
+    update = "TermOpen",
   }
 
   local TerminalIcon = {
     provider = " ",
-    hl = { fg = "green" }
+    hl = { fg = "green" },
   }
 
   local TerminalName = {
@@ -694,7 +654,7 @@ function M.statusline()
       local tname, _ = vim.api.nvim_buf_get_name(0):gsub(".*:", "")
 
       return tname
-    end
+    end,
   }
 
   TerminalBlock = utils.insert(TerminalBlock, TerminalIcon, TerminalName)
@@ -703,12 +663,12 @@ function M.statusline()
   local HelpBlock = {
     condition = function()
       return vim.bo.filetype == "help"
-    end
+    end,
   }
 
   local HelpIcon = {
     provider = " ",
-    hl = { fg = "blue" }
+    hl = { fg = "blue" },
   }
 
   local HelpFileName = {
@@ -716,7 +676,7 @@ function M.statusline()
       local filename = vim.api.nvim_buf_get_name(0)
 
       return fn.fnamemodify(filename, ":t")
-    end
+    end,
   }
 
   HelpBlock = utils.insert(HelpBlock, HelpIcon, HelpFileName)
@@ -729,7 +689,7 @@ function M.statusline()
   local WorkDirIcon = {
     provider = " ",
 
-    hl = { fg = "blue" }
+    hl = { fg = "blue" },
   }
 
   local WorkDir = {
@@ -756,12 +716,12 @@ function M.statusline()
         local trail = self.cwd:sub(-1) == "/" and "" or "/"
 
         return self.indicator .. cwd .. trail .. " "
-      end
+      end,
     },
     {
       -- evaluates to "", hiding the component
-      provider = ""
-    }
+      provider = "",
+    },
   }
 
   Center = utils.insert(Center, WorkDirIcon, WorkDir)
@@ -771,7 +731,7 @@ function M.statusline()
 
     provider = " ",
 
-    hl = { fg = "orange" }
+    hl = { fg = "orange" },
   }
 
   local GitBranch = {
@@ -779,7 +739,7 @@ function M.statusline()
 
     provider = function()
       return vim.b.gitsigns_status_dict.head
-    end
+    end,
   }
 
   local GitDiff = {
@@ -802,7 +762,7 @@ function M.statusline()
         return " " .. self.added
       end,
 
-      hl = { fg = "git_add" }
+      hl = { fg = "git_add" },
     },
     {
       init = function(self)
@@ -817,7 +777,7 @@ function M.statusline()
         return " " .. self.changed
       end,
 
-      hl = { fg = "git_change" }
+      hl = { fg = "git_change" },
     },
     {
       init = function(self)
@@ -832,7 +792,7 @@ function M.statusline()
         return " " .. self.removed
       end,
 
-      hl = { fg = "git_del" }
+      hl = { fg = "git_del" },
     },
   }
 
@@ -920,20 +880,20 @@ function M.statusline()
 
     condition = function()
       return vim.bo.buftype == ""
-    end
+    end,
   }
 
   local IndentIcon = {
     provider = "󰉶 ",
 
-    hl = { fg = "green" }
+    hl = { fg = "green" },
   }
 
   local IndentIndicator = {
     {
       provider = function(self)
         return self.indent_size .. " "
-      end
+      end,
     },
     {
       provider = function(self)
@@ -942,13 +902,14 @@ function M.statusline()
 
       hl = function(self)
         return {
-          fg = self.use_spaces and "green" or "red"
+          fg = self.use_spaces and "green" or "red",
         }
-      end
-    }
+      end,
+    },
   }
 
-  IndentBlock = utils.insert(IndentBlock, Separator, IndentIcon, IndentIndicator)
+  IndentBlock =
+    utils.insert(IndentBlock, Separator, IndentIcon, IndentIndicator)
   Right = utils.insert(Right, IndentBlock)
 
   local FileSize = {
@@ -966,15 +927,15 @@ function M.statusline()
     {
       provider = function(self)
         return self.fsize.size
-      end
+      end,
     },
     {
       provider = function(self)
         return self.fsize.postfix
       end,
 
-      hl = { fg = "surface1" }
-    }
+      hl = { fg = "surface1" },
+    },
   }
 
   Right = utils.insert(Right, FileSize)
@@ -985,45 +946,44 @@ function M.statusline()
     {
       provider = " ",
 
-      hl = { fg = "surface1" }
+      hl = { fg = "surface1" },
     },
     {
-      provider = "%2c"
+      provider = "%2c",
     },
     {
       provider = ", ",
 
-      hl = { fg = "surface1" }
+      hl = { fg = "surface1" },
     },
     {
-      provider = "%3L"
+      provider = "%3L",
     },
     {
       provider = "LOC",
 
-      hl = { fg = "surface1" }
+      hl = { fg = "surface1" },
     },
     {
       provider = ", ",
 
-      hl = { fg = "surface1" }
+      hl = { fg = "surface1" },
     },
     {
-      provider = "%3p"
+      provider = "%3p",
     },
     {
       provider = "%%",
 
-      hl = { fg = "surface1" }
-    }
+      hl = { fg = "surface1" },
+    },
   }
-
 
   Right = utils.insert(Right, Separator, Ruler)
 
   local ScrollBar = {
     static = {
-      segments = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" }
+      segments = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" },
     },
 
     update = "CursorMoved",
@@ -1031,19 +991,20 @@ function M.statusline()
     provider = function(self)
       local current_lnum = vim.api.nvim_win_get_cursor(0)[1]
       local total_lines = vim.api.nvim_buf_line_count(0)
-      local i = math.floor((current_lnum - 1) / total_lines * #self.segments) + 1
+      local i = math.floor((current_lnum - 1) / total_lines * #self.segments)
+        + 1
 
       return self.segments[i]:rep(2)
     end,
 
-    hl = { fg = "green", bg = "bright_bg" }
+    hl = { fg = "green", bg = "bright_bg" },
   }
 
   statusline = utils.insert(statusline, Right, Space, ScrollBar)
 
-  heirline.setup {
-    statusline = statusline
-  }
+  heirline.setup({
+    statusline = statusline,
+  })
 end
 
 return M

@@ -36,11 +36,13 @@ end
 ---@param rgb rgb
 ---@return string
 function M.rgb_to_hex(rgb)
-  return table.concat({
-    string.format("%02x", rgb[1]),
-    string.format("%02x", rgb[2]),
-    string.format("%02x", rgb[3]),
-  }):upper()
+  return table
+    .concat({
+      string.format("%02x", rgb[1]),
+      string.format("%02x", rgb[2]),
+      string.format("%02x", rgb[3]),
+    })
+    :upper()
 end
 
 ---Blend colors between two color palettes

@@ -2,29 +2,42 @@ local M = {}
 
 local uv, log_levels = vim.loop, vim.log.levels
 
-local constants = require("core.constants")
-
-constants.setup()
+local paths = require("utils.paths")
 
 local prepare_needed_dirs = function()
   local needed_dirs = {
-    data_dir .. path_sep .. "backups",
-    cache_dir .. path_sep .. "sessions",
-    cache_dir .. path_sep .. "swap",
-    cache_dir .. path_sep .. "undos",
+    paths.join_paths(paths.data_dir, "backups"),
+    paths.join_paths(paths.data_dir, "sessions"),
+    paths.join_paths(paths.data_dir, "swap"),
+    paths.join_paths(paths.data_dir, "undos"),
   }
 
   for _, needed_dir in pairs(needed_dirs) do
     local needed_dir_stat, err, err_signature = uv.fs_stat(needed_dir)
 
     if needed_dir_stat == nil and err_signature ~= "ENOENT" then
-      vim.notify("Cannot stat directory: " .. needed_dir .. "\n" .. err, log_levels.ERROR, {
-        title = "core",
-      })
-    elseif err == nil and needed_dir_stat ~= nil and needed_dir_stat.type ~= "directory" then
-      vim.notify("Error while preparing " .. needed_dir .. ": This is a " .. needed_dir_stat.type, log_levels.ERROR, {
-        title = "core",
-      })
+      vim.notify(
+        "Cannot stat directory: " .. needed_dir .. "\n" .. err,
+        log_levels.ERROR,
+        {
+          title = "core",
+        }
+      )
+    elseif
+      err == nil
+      and needed_dir_stat ~= nil
+      and needed_dir_stat.type ~= "directory"
+    then
+      vim.notify(
+        "Error while preparing "
+          .. needed_dir
+          .. ": This is a "
+          .. needed_dir_stat.type,
+        log_levels.ERROR,
+        {
+          title = "core",
+        }
+      )
 
       return
     end
@@ -59,9 +72,8 @@ function M.setup()
     once = true,
     callback = function()
       setup_very_lazy()
-    end
+    end,
   })
 end
 
 return M
-

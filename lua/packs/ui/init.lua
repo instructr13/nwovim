@@ -20,7 +20,7 @@ return {
         return {
           SpellBad = {
             undercurl = false,
-            underdashed = true
+            underdashed = true,
           },
           MatchParen = {
             link = "IlluminatedWordText",
@@ -44,11 +44,11 @@ return {
             fg = "NONE",
           },
           IndentBlanklineContextChar = {
-            fg = "#f5bde6"
+            fg = "#f5bde6",
           },
           IndentBlanklineContextStart = {
-            sp = "#f5bde6"
-          }
+            sp = "#f5bde6",
+          },
         }
       end,
       integrations = {
@@ -75,12 +75,12 @@ return {
           },
         },
         dropbar = {
-          enabled = true
+          enabled = true,
         },
         barbecue = {
           dim_dirname = true,
           bold_basename = false,
-          dim_context = false
+          dim_context = false,
         },
         navic = {
           enabled = true,
@@ -94,10 +94,10 @@ return {
         illuminate = true,
         indent_blankline = {
           enabled = true,
-          colored_indent_levels = true
-        }
-      }
-    }
+          colored_indent_levels = true,
+        },
+      },
+    },
   },
   {
     "stevearc/dressing.nvim",
@@ -119,7 +119,7 @@ return {
           },
         },
       },
-    }
+    },
   },
   {
     "folke/noice.nvim",
@@ -131,14 +131,14 @@ return {
 
         config = function()
           C.notify()
-        end
-      }
+        end,
+      },
     },
 
     opts = {
       lsp = {
         progress = {
-          enabled = false
+          enabled = false,
         },
         override = {
           ["cmp.entry.get_documentation"] = true,
@@ -151,7 +151,7 @@ return {
         inc_rename = true,
         lsp_doc_border = true,
       },
-    }
+    },
   },
   {
     -- Statusline
@@ -161,7 +161,7 @@ return {
 
     config = function()
       C.statusline()
-    end
+    end,
   },
   --[[
   {
@@ -189,12 +189,12 @@ return {
     event = { "Colorscheme" },
 
     dependencies = {
-      "nvim-tree/nvim-web-devicons"
+      "nvim-tree/nvim-web-devicons",
     },
 
     config = function()
       C.bufferline()
-    end
+    end,
   },
   {
     -- Winbar
@@ -218,11 +218,11 @@ return {
           },
           menu = {
             separator = " ",
-            indicator = ""
+            indicator = "",
           },
         },
-      }
-    }
+      },
+    },
   },
   {
     -- Winbar <= NVIM-0.9
@@ -241,7 +241,7 @@ return {
 
     config = function()
       C.barbecue()
-    end
+    end,
   },
   {
     "lewis6991/satellite.nvim",
@@ -249,8 +249,8 @@ return {
     event = { "BufReadPost", "BufNewFile" },
 
     opts = {
-      excluded_filetypes = { "neo-tree" }
-    }
+      excluded_filetypes = { "neo-tree" },
+    },
   },
   {
     -- Statuscolumn added by NVIM-0.9
@@ -258,9 +258,70 @@ return {
 
     event = { "UIEnter" },
 
-    config = function()
-      C.statuscol()
-    end
+    opts = function()
+      local builtin = require("statuscol.builtin")
+
+      return {
+        bt_ignore = { "nofile", "terminal" },
+        relculright = true,
+        segments = {
+          {
+            sign = {
+              name = { "DapBreakpoint" },
+              maxwidth = 1,
+              colwidth = 1,
+              click = builtin.toggle_breakpoint,
+            },
+          },
+          {
+            sign = {
+              name = { "Diagnostic" },
+              maxwidth = 1,
+              colwidth = 2,
+            },
+            click = "v:lua.ScSa",
+          },
+          {
+            sign = {
+              name = { ".*" }, -- table of lua patterns to match the sign name against
+              auto = true,
+              wrap = true,
+            },
+          },
+          {
+            text = { builtin.lnumfunc, " " },
+            click = "v:lua.ScLa",
+          },
+          {
+            sign = {
+              name = { "GitSigns.*" },
+            },
+            click = "v:lua.ScSa",
+          },
+          {
+            text = { builtin.foldfunc },
+            click = "v:lua.ScFa",
+          },
+          { text = { " " } },
+          {
+            sign = {
+              name = { "LightbulbSign" },
+              maxwidth = 1,
+              colwidth = 1,
+            },
+            click = "v:lua.ScSa",
+          },
+          { text = { " │" } },
+        },
+        clickhandlers = {
+          LightbulbSign = function(args)
+            if args.button == "l" then
+              vim.lsp.buf.code_action()
+            end
+          end,
+        },
+      }
+    end,
   },
   {
     "mawkler/modicator.nvim",
@@ -268,8 +329,8 @@ return {
     event = { "ModeChanged" },
 
     opts = {
-      show_warnings = false
-    }
+      show_warnings = false,
+    },
   },
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -282,6 +343,6 @@ return {
       show_current_context = true,
       show_current_context_start = true,
       show_first_indent_level = false,
-    }
-  }
+    },
+  },
 }

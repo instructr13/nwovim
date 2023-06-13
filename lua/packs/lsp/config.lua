@@ -1,15 +1,5 @@
 local M = {}
 
-function M.mason()
-  local handlers = require("lsp.handlers")
-
-  require("mason").setup()
-  require("mason-lspconfig").setup {
-    ensure_installed = { "lua_ls", "jsonls" },
-    handlers = handlers
-  }
-end
-
 function M.format_setup()
   local group = vim.api.nvim_create_augroup("LspAttach_lsp_format", {})
 
@@ -24,7 +14,8 @@ function M.format_setup()
 
       if client.supports_method("textDocument/formatting") then
         local buffer = args.buf
-        local keymap = require("utils.keymap").omit("append", "n", "", { buffer = buffer })
+        local keymap =
+          require("utils.keymap").omit("append", "n", "", { buffer = buffer })
 
         require("lsp-format").on_attach(client)
 
@@ -34,7 +25,7 @@ function M.format_setup()
           require("lsp-format").format()
         end, "Format")
       end
-    end
+    end,
   })
 end
 

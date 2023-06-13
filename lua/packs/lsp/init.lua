@@ -2,32 +2,81 @@ local C = require("packs.lsp.config")
 
 return {
   {
-    "neovim/nvim-lspconfig",
-
-    lazy = true,
-
-    config = function()
-      require("lspconfig.ui.windows").default_options.border = "rounded"
-    end
-  },
-  {
     "williamboman/mason.nvim",
 
-    event = { "BufReadPost", "BufNewFile" },
+    lazy = true,
 
     cmd = "Mason",
 
     build = ":MasonUpdate",
 
-    config = function()
-      C.mason()
+    opts = {
+      ui = {
+        border = "rounded",
+      },
+    },
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+
+    event = { "BufReadPre", "BufNewFile" },
+
+    opts = function()
+      local handlers = require("lsp.handlers")
+
+      return {
+        ensure_installed = { "lua_ls", "jsonls" },
+        handlers = handlers,
+      }
     end,
 
     dependencies = {
+      "williamboman/mason.nvim",
       {
-        "williamboman/mason-lspconfig.nvim"
-      }
-    }
+        "neovim/nvim-lspconfig",
+
+        config = function()
+          require("lspconfig.ui.windows").default_options.border = "rounded"
+        end,
+      },
+    },
+  },
+  {
+    "jay-babu/mason-null-ls.nvim",
+
+    event = { "BufReadPre", "BufNewFile" },
+
+    opts = {
+      ensure_installed = { "stylua" },
+      handlers = {
+        function(source_name, methods)
+          require("mason-null-ls.automatic_setup")(source_name, methods)
+        end,
+      },
+    },
+
+    dependencies = {
+      "williamboman/mason.nvim",
+
+      {
+        "jose-elias-alvarez/null-ls.nvim",
+
+        opts = function()
+          local builtins = require("null-ls").builtins
+
+          return {
+            sources = {
+              builtins.code_actions.gitsigns,
+              builtins.code_actions.gitrebase,
+              builtins.code_actions.impl, -- Go
+              builtins.code_actions.refactoring,
+              builtins.hover.dictionary,
+              builtins.hover.printenv,
+            },
+          }
+        end,
+      },
+    },
   },
   {
     "seblj/nvim-lsp-extras",
@@ -35,15 +84,15 @@ return {
     event = { "BufReadPost", "BufNewFile" },
 
     opts = {
-      signature = false
-    }
+      signature = false,
+    },
   },
   {
     "VidocqH/lsp-lens.nvim",
 
     event = { "LspAttach" },
 
-    opts = {}
+    opts = {},
   },
   {
     "lukas-reineke/lsp-format.nvim",
@@ -52,7 +101,7 @@ return {
 
     init = function()
       C.format_setup()
-    end
+    end,
   },
   {
     "lvimuser/lsp-inlayhints.nvim",
@@ -61,7 +110,7 @@ return {
 
     init = function()
       C.inlayhints_setup()
-    end
+    end,
   },
   {
     "j-hui/fidget.nvim",
@@ -75,10 +124,10 @@ return {
     opts = {
       sources = {
         ["null-ls"] = {
-          ignore = true
-        }
-      }
-    }
+          ignore = true,
+        },
+      },
+    },
   },
   {
     "folke/trouble.nvim",
@@ -88,7 +137,7 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
 
     opts = {
-      use_diagnostic_signs = true
-    }
-  }
+      use_diagnostic_signs = true,
+    },
+  },
 }

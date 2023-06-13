@@ -1,9 +1,15 @@
 local fn, uv = vim.fn, vim.loop
 
+local paths = require("utils.paths")
+
 local plugin_manager_repo = "folke/lazy.nvim"
 local plugin_manager_name = "lazy"
 local plugin_manager_identifier = "lazy.nvim"
-local plugin_manager_path = join_paths(data_dir, plugin_manager_name, plugin_manager_identifier)
+local plugin_manager_path = paths.join_paths(
+  paths.data_dir,
+  plugin_manager_name,
+  plugin_manager_identifier
+)
 
 local M = {}
 
@@ -46,7 +52,11 @@ local function bootstrap_plugin_manager()
     return
   end
 
-  local command = string.format("git clone https://github.com/%s.git --filter=blob:none --branch=stable %s", plugin_manager_repo, plugin_manager_path)
+  local command = string.format(
+    "git clone https://github.com/%s.git --filter=blob:none --branch=stable %s",
+    plugin_manager_repo,
+    plugin_manager_path
+  )
 
   fn.system(command)
 end
@@ -59,9 +69,14 @@ function M.setup()
   local lazy = require("lazy")
 
   lazy.setup("packs", {
-    checker = { enabled = true }
+    diff = {
+      cmd = "diffview.nvim",
+    },
+    checker = { enabled = true },
+    ui = {
+      border = "rounded",
+    },
   })
 end
 
 return M
-

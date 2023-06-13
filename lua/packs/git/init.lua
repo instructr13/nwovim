@@ -69,7 +69,11 @@ return {
             full = true,
           })
         end, "Blame Line")
-        leader_keymap("T", gs.toggle_current_line_blame, "Toggle Current Line Blame")
+        leader_keymap(
+          "T",
+          gs.toggle_current_line_blame,
+          "Toggle Current Line Blame"
+        )
         leader_keymap("d", gs.diffthis, "Diff This")
         leader_keymap("D", function()
           gs.diffthis("~")
@@ -109,6 +113,15 @@ return {
         row = 0,
         col = 1,
       },
-    }
-  }
+    },
+  },
+  {
+    "sindrets/diffview.nvim",
+
+    lazy = true,
+
+    cmd = {
+      "DiffviewOpen",
+    },
+  },
 }

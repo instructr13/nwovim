@@ -2,14 +2,17 @@ local M = {}
 
 function M.list_workspace_folders()
   local bullet = "  - "
-  local workspace_folders = table.concat(vim.lsp.buf.list_workspace_folders(), "\n" .. bullet)
+  local workspace_folders =
+    table.concat(vim.lsp.buf.list_workspace_folders(), "\n" .. bullet)
 
   if workspace_folders == "" then
     workspace_folders = "None"
   end
 
   vim.notify(
-    "List of workspace folders:\n" .. (workspace_folders ~= "" and bullet or "") .. workspace_folders,
+    "List of workspace folders:\n"
+      .. (workspace_folders ~= "" and bullet or "")
+      .. workspace_folders,
     vim.log.levels.INFO,
     { title = "lsp" }
   )

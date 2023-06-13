@@ -3,7 +3,9 @@ local M = {}
 local utils = require("utils.lsp")
 
 local function on_attach(client, buffer)
-  local keymap = require("utils.keymap").omit("append", "n", "", { buffer = buffer })
+  local keymap =
+    require("utils.keymap").omit("append", "n", "", { buffer = buffer })
+  local _keymap = require("utils.keymap").keymap
 
   local command = require("utils.command").current_buf_command
 
@@ -20,7 +22,7 @@ local function on_attach(client, buffer)
   end
 
   if cap["codeActionProvider"] then
-    keymap("<F4>", function()
+    _keymap({ "n", "v" }, "<F4>", function()
       vim.lsp.buf.code_action()
     end, "Code Action")
   end
@@ -212,7 +214,9 @@ local function on_attach(client, buffer)
   end, "Workspace Folders")
 
   command("LspAddWorkspaceFolder", function(args)
-    vim.lsp.buf.add_workspace_folder(args.args ~= "" and vim.fn.fnamemodify(args.args, ":p"))
+    vim.lsp.buf.add_workspace_folder(
+      args.args ~= "" and vim.fn.fnamemodify(args.args, ":p")
+    )
   end, "Add Workspace Folder", { nargs = "?", complete = "dir" })
 
   command(
@@ -241,14 +245,18 @@ local function on_attach(client, buffer)
     vim.lsp.buf.remove_workspace_folder()
   end, "Remove Workspace Folder")
 
-  command("LspLog", "execute '<mods> pedit +$' v:lua.vim.lsp.get_log_path()", "LSP Log")
+  command(
+    "LspLog",
+    "execute '<mods> pedit +$' v:lua.vim.lsp.get_log_path()",
+    "LSP Log"
+  )
 end
 
 local function common(server_name, opts)
   opts = opts or {}
 
   require("lspconfig")[server_name].setup(vim.tbl_deep_extend("error", {
-    on_attach = on_attach
+    on_attach = on_attach,
   }, opts))
 end
 
@@ -262,16 +270,16 @@ function M.lua_ls()
     settings = {
       Lua = {
         completion = {
-          callSnippet = "Replace"
+          callSnippet = "Replace",
         },
         hint = {
-          enable = true
+          enable = true,
         },
         telemetry = {
-          enable = false
-        }
-      }
-    }
+          enable = false,
+        },
+      },
+    },
   })
 end
 

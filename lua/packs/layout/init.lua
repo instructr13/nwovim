@@ -1,3 +1,5 @@
+local C = require("packs.layout.config")
+
 return {
   {
     "folke/edgy.nvim",
@@ -13,19 +15,54 @@ return {
         dependencies = {
           "nvim-lua/plenary.nvim",
           "nvim-tree/nvim-web-devicons",
-          "MunifTanjim/nui.nvim"
+          "MunifTanjim/nui.nvim",
         },
 
         branch = "v2.x",
 
         init = function()
           vim.g.neo_tree_remove_legacy_commands = 1
+
+          local keymap = require("utils.keymap").keymap
+
+          keymap("n", "\\", "<cmd>Neotree toggle<cr>", "Toggle Neo-tree")
         end,
 
         opts = {
+          sources = {
+            "filesystem",
+            "buffers",
+            "git_status",
+            "document_symbols",
+          },
+          auto_clean_after_session_restore = true,
+          hide_root_node = true,
+          use_popups_for_input = false,
+
+          source_selector = {
+            winbar = false,
+
+            sources = {
+              { source = "filesystem" },
+              { source = "git_status" },
+              { source = "buffers" },
+            },
+          },
+
+          event_handlers = {
+            {
+              event = "file_moved",
+              handler = C.neo_tree.on_file_move,
+            },
+            {
+              event = "file_renamed",
+              handler = C.neo_tree.on_file_move,
+            },
+          },
+
           window = {
             mappings = {
-              ["e"] = function()
+              ["f"] = function()
                 vim.api.nvim_exec([[Neotree focus filesystem left]], true)
               end,
               ["b"] = function()
@@ -34,10 +71,25 @@ return {
               ["g"] = function()
                 vim.api.nvim_exec([[Neotree focus git_status left]], true)
               end,
-            }
+            },
           },
 
           filesystem = {
+            filtered_items = {
+              hide_dotfiles = false,
+              hide_by_name = {
+                "node_modules",
+              },
+              never_show = {
+                ".DS_Store",
+                "thumbs.db",
+              },
+              never_show_by_pattern = {
+                ".null-ls_*",
+              },
+            },
+            group_empty_dirs = true,
+            use_libuv_file_watcher = true,
             window = {
               mappings = {
                 ["<tab>"] = function(state)
@@ -48,54 +100,63 @@ return {
                   else
                     state.commands["open"](state)
 
-                    vim.cmd [[Neotree reveal]]
+                    vim.cmd([[Neotree reveal]])
                   end
                 end,
                 ["h"] = function(state)
                   local node = state.tree:get_node()
 
-                  if node.type == 'directory' and node:is_expanded() then
-                    require("neo-tree.sources.filesystem").toggle_directory(state, node)
+                  if node.type == "directory" and node:is_expanded() then
+                    require("neo-tree.sources.filesystem").toggle_directory(
+                      state,
+                      node
+                    )
                   else
-                    require("neo-tree.ui.renderer").focus_node(state, node:get_parent_id())
+                    require("neo-tree.ui.renderer").focus_node(
+                      state,
+                      node:get_parent_id()
+                    )
                   end
                 end,
                 ["l"] = function(state)
                   local node = state.tree:get_node()
 
-                  if node.type == 'directory' then
+                  if node.type == "directory" then
                     if not node:is_expanded() then
-                      require("neo-tree.sources.filesystem").toggle_directory(state, node)
+                      require("neo-tree.sources.filesystem").toggle_directory(
+                        state,
+                        node
+                      )
                     elseif node:has_children() then
-                      require("neo-tree.ui.renderer").focus_node(state, node:get_child_ids()[1])
+                      require("neo-tree.ui.renderer").focus_node(
+                        state,
+                        node:get_child_ids()[1]
+                      )
                     end
                   end
                 end,
-              }
+              },
             },
           },
-
-          source_selector = {
-            winbar = true
-          }
-        }
-      }
+        },
+      },
     },
 
     opts = {
+      exit_when_last = true,
       bottom = {
         {
           ft = "toggleterm",
           size = {
-            height = 0.4
+            height = 0.4,
           },
           -- exclude floating windows
           filter = function(_, win)
             return vim.api.nvim_win_get_config(win).relative == ""
-          end
+          end,
         },
         "Trouble",
-        { ft = "qf",          title = "QuickFix" },
+        { ft = "qf", title = "QuickFix" },
         { ft = "startuptime", title = "Startup Time Measurement" },
         {
           ft = "help",
@@ -105,7 +166,46 @@ return {
             return vim.bo[buf].buftype == "help"
           end,
         },
-      }
+      },
+      left = {
+        {
+          title = "Neo-tree",
+          ft = "neo-tree",
+          pinned = true,
+          filter = function(buf)
+            local source = vim.b[buf].neo_tree_source
+
+            return source == "filesystem" or source == "remote"
+          end,
+        },
+        {
+          title = "Git",
+          ft = "neo-tree",
+          pinned = true,
+          open = "Neotree position=top git_status",
+          filter = function(buf)
+            return vim.b[buf].neo_tree_source == "git_status"
+          end,
+        },
+        {
+          title = "Buffers",
+          ft = "neo-tree",
+          pinned = true,
+          open = "Neotree position=bottom buffers",
+          filter = function(buf)
+            return vim.b[buf].neo_tree_source == "buffers"
+          end,
+        },
+        {
+          title = "Document Symbols",
+          ft = "neo-tree",
+          pinned = true,
+          open = "Neotree position=right document_symbols",
+          filter = function(buf)
+            return vim.b[buf].neo_tree_source == "document_symbols"
+          end,
+        },
+      },
     },
-  }
+  },
 }

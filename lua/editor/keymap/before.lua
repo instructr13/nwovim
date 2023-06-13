@@ -30,7 +30,12 @@ end
 keymap("n", "<Tab>", function()
   local filetype = vim.opt_local.filetype:get()
 
-  if vim.tbl_contains(require("core.constants").window.ignore_buf_change_filetypes, filetype) then
+  if
+    vim.tbl_contains(
+      require("core.constants").window.ignore_buf_change_filetypes,
+      filetype
+    )
+  then
     return
   end
 
@@ -40,7 +45,12 @@ end, "Next Buffer")
 keymap("n", "<S-Tab>", function()
   local filetype = vim.opt_local.filetype:get()
 
-  if vim.tbl_contains(require("core.constants").window.ignore_buf_change_filetypes, filetype) then
+  if
+    vim.tbl_contains(
+      require("core.constants").window.ignore_buf_change_filetypes,
+      filetype
+    )
+  then
     return
   end
 

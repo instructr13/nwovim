@@ -6,7 +6,7 @@ return {
 
     opts = {
       open_mapping = [[<C-t>]],
-      autochdir = true
-    }
-  }
+      autochdir = true,
+    },
+  },
 }

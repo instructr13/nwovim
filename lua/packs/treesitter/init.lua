@@ -19,6 +19,28 @@ return {
 
     config = function()
       C.treesitter()
-    end
+    end,
+  },
+  {
+    "ThePrimeagen/refactoring.nvim",
+
+    lazy = true,
+
+    opts = {},
+  },
+  {
+    "CKolkey/ts-node-action",
+
+    lazy = true,
+
+    init = function()
+      local keymap = require("utils.keymap").keymap
+
+      keymap("n", "<C-k>", function()
+        require("ts-node-action").node_action()
+      end, "Trigger Node Action")
+    end,
+
+    opts = {},
   },
 }

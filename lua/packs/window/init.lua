@@ -6,19 +6,19 @@ return {
 
     event = { "VimResized" },
 
-    opts = {}
+    opts = {},
   },
   {
     "mrjones2014/smart-splits.nvim",
 
     config = function()
-      require("smart-splits").setup {
+      require("smart-splits").setup({
         resize_mode = {
           hooks = {
             on_leave = require("bufresize").register,
-          }
-        }
-      }
+          },
+        },
+      })
 
       local keymap = require("utils.keymap").omit("insert", "n", "<^%>")
 
@@ -60,6 +60,6 @@ return {
       keymap("<leader><leader>l", function()
         require("smart-splits").swap_buf_right()
       end)
-    end
-  }
+    end,
+  },
 }
