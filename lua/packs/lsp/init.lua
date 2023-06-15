@@ -99,6 +99,10 @@ return {
 
     lazy = true,
 
+    opts = {
+      exclude = { "lua_ls" },
+    },
+
     init = function()
       C.format_setup()
     end,

@@ -33,13 +33,23 @@ return {
 
     lazy = true,
 
+    cmd = "NodeAction",
+
     init = function()
       local keymap = require("utils.keymap").keymap
 
-      keymap("n", "<C-k>", function()
-        require("ts-node-action").node_action()
+      keymap("n", "<C-s>", function()
+        vim.cmd("NodeAction")
       end, "Trigger Node Action")
     end,
+
+    dependencies = {
+      {
+        "tpope/vim-repeat",
+
+        lazy = false,
+      },
+    },
 
     opts = {},
   },

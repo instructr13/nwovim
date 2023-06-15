@@ -1,15 +1,13 @@
 local fn, uv = vim.fn, vim.loop
 
-local paths = require("utils.paths")
+local data_dir = require("constants.paths").data_dir
+local join_paths = require("utils.paths").join_paths
 
 local plugin_manager_repo = "folke/lazy.nvim"
 local plugin_manager_name = "lazy"
 local plugin_manager_identifier = "lazy.nvim"
-local plugin_manager_path = paths.join_paths(
-  paths.data_dir,
-  plugin_manager_name,
-  plugin_manager_identifier
-)
+local plugin_manager_path =
+    join_paths(data_dir, plugin_manager_name, plugin_manager_identifier)
 
 local M = {}
 

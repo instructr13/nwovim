@@ -35,6 +35,7 @@ return {
             "git_status",
             "document_symbols",
           },
+
           auto_clean_after_session_restore = true,
           hide_root_node = true,
           use_popups_for_input = false,
@@ -138,7 +139,36 @@ return {
               },
             },
           },
+
+          document_symbols = {
+            client_filters = {
+              ignore = { "null-ls" },
+            },
+          },
         },
+      },
+      {
+        "nvim-pack/nvim-spectre",
+
+        init = function()
+          local keymap = require("utils.keymap").omit("append", "n", "<leader>")
+
+          keymap("S", function()
+            require("spectre").open()
+          end, "Open Spectre")
+
+          keymap("sw", function()
+            require("spectre").open_visual({ select_word = true })
+          end, "Search current word")
+
+          require("utils.keymap").keymap("v", "<leader>sw", function()
+            require("spectre").open_visual()
+          end, "Search selected word")
+
+          keymap("sp", function()
+            require("spectre").open_file_search({ select_word = true })
+          end, "Search on current file")
+        end,
       },
     },
 
@@ -205,6 +235,9 @@ return {
             return vim.b[buf].neo_tree_source == "document_symbols"
           end,
         },
+      },
+      right = {
+        { ft = "spectre_panel", size = { width = 0.4 } },
       },
     },
   },

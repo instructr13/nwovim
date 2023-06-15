@@ -140,9 +140,6 @@ return {
         progress = {
           enabled = false,
         },
-        override = {
-          ["cmp.entry.get_documentation"] = true,
-        },
       },
       presets = {
         bottom_search = true,
@@ -158,6 +155,28 @@ return {
     "rebelot/heirline.nvim",
 
     event = { "UIEnter" },
+
+    dependencies = {
+      {
+        "jonahgoldwastaken/copilot-status.nvim",
+
+        event = "BufReadPost",
+
+        dependencies = {
+          "copilot.lua",
+        },
+
+        opts = {
+          icons = {
+            idle = " ",
+            error = " ",
+            offline = " ",
+            warning = " ",
+            loading = " ",
+          },
+        },
+      },
+    },
 
     config = function()
       C.statusline()
@@ -211,6 +230,9 @@ return {
     opts = {
       icons = {
         enable = true,
+        kinds = {
+          symbols = require("constants.lsp.kind"),
+        },
         ui = {
           bar = {
             separator = "  ",
@@ -344,5 +366,88 @@ return {
       show_current_context_start = true,
       show_first_indent_level = false,
     },
+  },
+  {
+    "Cassin01/wf.nvim",
+
+    version = "*",
+
+    config = function()
+      require("wf").setup({
+        theme = "chad",
+      })
+
+      local which_key = require("wf.builtin.which_key")
+      local mark = require("wf.builtin.mark")
+
+      -- Mark
+      vim.keymap.set(
+        "n",
+        "'",
+        -- mark(opts?: table) -> function
+        -- opts?: option
+        mark(),
+        {
+          nowait = true,
+          noremap = true,
+          silent = true,
+          desc = "[wf.nvim] mark",
+        }
+      )
+
+      -- a timer to call a callback after a specified number of milliseconds.
+      local function timeout(ms, callback)
+        local uv = vim.loop
+        local timer = uv.new_timer()
+
+        if not timer then
+          error("Couldn't create the timer")
+        end
+
+        local _callback = vim.schedule_wrap(function()
+          uv.timer_stop(timer)
+          uv.close(timer)
+          callback()
+        end)
+
+        uv.timer_start(timer, ms, 0, _callback)
+      end
+
+      local function set_timeout_keymap(key, group_name)
+        timeout(100, function()
+          vim.keymap.set(
+            "n",
+            key,
+            which_key({ text_insert_in_advance = key }),
+            { noremap = true, silent = true, desc = "[wf.nvim] which-key /" }
+          )
+        end)
+
+        vim.api.nvim_create_autocmd({ "BufEnter", "BufAdd" }, {
+          group = vim.api.nvim_create_augroup(
+            "wf_" .. group_name,
+            { clear = true }
+          ),
+          callback = function()
+            timeout(100, function()
+              vim.keymap.set(
+                "n",
+                key,
+                which_key({ text_insert_in_advance = key }),
+                {
+                  noremap = true,
+                  silent = true,
+                  desc = "[wf.nvim] which-key /",
+                  buffer = true,
+                }
+              )
+            end)
+          end,
+        })
+      end
+
+      set_timeout_keymap("<Space>", "leader")
+      set_timeout_keymap("<Localleader>", "local_leader")
+    end,
   },
 }

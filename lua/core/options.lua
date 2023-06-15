@@ -1,6 +1,7 @@
 local M = {}
 
-local paths = require("utils.paths")
+local data_dir = require("constants.paths").data_dir
+local join_paths = require("utils.paths").join_paths
 
 function M.setup()
   vim.opt.termguicolors = true
@@ -168,7 +169,7 @@ function M.setup()
   vim.opt.exrc = true
   vim.opt.secure = true
 
-  vim.opt.undodir = paths.join_paths(paths.data_dir, "undos")
+  vim.opt.undodir = join_paths(data_dir, "undos")
   vim.opt.undofile = true
 
   vim.opt.spell = true

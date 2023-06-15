@@ -26,6 +26,13 @@ return {
     end,
   },
   {
+    "abecodes/tabout.nvim",
+
+    event = "InsertEnter",
+
+    opts = {},
+  },
+  {
     -- colorcolumn
     "Bekaboo/deadcolumn.nvim",
 

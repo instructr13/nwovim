@@ -1,7 +1,7 @@
 -- Non-plugin-related keymaps
 
 local keymap = require("utils.keymap").keymap
-local constants = require("core.constants")
+local constants = require("constants.buffers")
 
 keymap("n", "<Space>", "")
 
@@ -31,10 +31,10 @@ keymap("n", "<Tab>", function()
   local filetype = vim.opt_local.filetype:get()
 
   if
-    vim.tbl_contains(
-      require("core.constants").window.ignore_buf_change_filetypes,
-      filetype
-    )
+      vim.tbl_contains(
+        require("constants.buffers").window.ignore_buf_change_filetypes,
+        filetype
+      )
   then
     return
   end
@@ -46,10 +46,10 @@ keymap("n", "<S-Tab>", function()
   local filetype = vim.opt_local.filetype:get()
 
   if
-    vim.tbl_contains(
-      require("core.constants").window.ignore_buf_change_filetypes,
-      filetype
-    )
+      vim.tbl_contains(
+        require("constants.buffers").window.ignore_buf_change_filetypes,
+        filetype
+      )
   then
     return
   end
@@ -161,3 +161,6 @@ end, "Move to the previous diagnostic")
 keymap("n", "]d", function()
   vim.diagnostic.goto_next()
 end, "Move to the next diagnostic")
+
+keymap("c", "<C-f>", "<Nop>")
+keymap("n", "q:", "<Nop>")

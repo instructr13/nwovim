@@ -1,7 +1,0 @@
-[selene]
-base = "lua51"
-name = "luajit"
-
-[jit]
-any = true
-

@@ -17,4 +17,23 @@ return {
       end, "Close buffer")
     end,
   },
+  {
+    "LunarVim/bigfile.nvim",
+
+    event = { "BufReadPre" },
+
+    opts = {
+      filesize = 4,
+      features = {
+        "indent_blankline",
+        "illuminate",
+        "lsp",
+        "treesitter",
+        "syntax",
+        "matchparen",
+        "vimopts",
+        "filetype",
+      },
+    },
+  },
 }

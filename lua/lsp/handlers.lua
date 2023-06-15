@@ -4,7 +4,8 @@ local utils = require("utils.lsp")
 
 local function on_attach(client, buffer)
   local keymap =
-    require("utils.keymap").omit("append", "n", "", { buffer = buffer })
+      require("utils.keymap").omit("append", "n", "", { buffer = buffer })
+
   local _keymap = require("utils.keymap").keymap
 
   local command = require("utils.command").current_buf_command
@@ -256,6 +257,7 @@ local function common(server_name, opts)
   opts = opts or {}
 
   require("lspconfig")[server_name].setup(vim.tbl_deep_extend("error", {
+    capabilities = require("cmp_nvim_lsp").default_capabilities(),
     on_attach = on_attach,
   }, opts))
 end

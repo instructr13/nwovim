@@ -2,14 +2,15 @@ local M = {}
 
 local uv, log_levels = vim.loop, vim.log.levels
 
-local paths = require("utils.paths")
+local data_dir = require("constants.paths").data_dir
+local join_paths = require("utils.paths").join_paths
 
 local prepare_needed_dirs = function()
   local needed_dirs = {
-    paths.join_paths(paths.data_dir, "backups"),
-    paths.join_paths(paths.data_dir, "sessions"),
-    paths.join_paths(paths.data_dir, "swap"),
-    paths.join_paths(paths.data_dir, "undos"),
+    join_paths(data_dir, "backups"),
+    join_paths(data_dir, "sessions"),
+    join_paths(data_dir, "swap"),
+    join_paths(data_dir, "undos"),
   }
 
   for _, needed_dir in pairs(needed_dirs) do
@@ -24,15 +25,15 @@ local prepare_needed_dirs = function()
         }
       )
     elseif
-      err == nil
-      and needed_dir_stat ~= nil
-      and needed_dir_stat.type ~= "directory"
+        err == nil
+        and needed_dir_stat ~= nil
+        and needed_dir_stat.type ~= "directory"
     then
       vim.notify(
         "Error while preparing "
-          .. needed_dir
-          .. ": This is a "
-          .. needed_dir_stat.type,
+        .. needed_dir
+        .. ": This is a "
+        .. needed_dir_stat.type,
         log_levels.ERROR,
         {
           title = "core",
