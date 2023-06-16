@@ -53,4 +53,29 @@ return {
 
     opts = {},
   },
+  {
+    "ziontee113/syntax-tree-surfer",
+
+    keys = {
+      "vU",
+      "vD",
+      "vd",
+      "vu",
+    },
+
+    cmd = {
+      "STSSwapOrHold",
+      "STSSwapOrHoldVisual",
+    },
+
+    lazy = true,
+
+    config = function()
+      C.syntax_tree_surfer()
+    end,
+
+    init = function()
+      C.syntax_tree_surfer_setup()
+    end,
+  },
 }
