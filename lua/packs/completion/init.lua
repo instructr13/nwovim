@@ -85,9 +85,9 @@ return {
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 
         return col ~= 0
-          and vim.api
-              .nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]
-              :match("^%s*$")
+            and vim.api
+            .nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]
+            :match("^%s*$")
             == nil
       end
 
@@ -127,20 +127,6 @@ return {
 
       cmp.setup.cmdline({ ":" }, {
         mapping = cmp.mapping.preset.cmdline({
-          ["<Down>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-            else
-              fallback()
-            end
-          end, { "c" }),
-          ["<Up>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            else
-              fallback()
-            end
-          end, { "c" }),
           ["<CR>"] = cmp.mapping(function(fallback)
             if cmp.visible() and cmp.get_active_entry() then
               cmp.confirm({
@@ -162,7 +148,7 @@ return {
       return {
         enabled = function()
           return vim.bo.buftype ~= "prompt"
-            or require("cmp_dap").is_dap_buffer()
+              or require("cmp_dap").is_dap_buffer()
         end,
         snippet = {
           expand = function(args)
@@ -217,8 +203,8 @@ return {
             end
 
             if
-              item.insertTextFormat == types.lsp.InsertTextFormat.Snippet
-              and vim_item.abbr:sub(-1, -1) == "~"
+                item.insertTextFormat == types.lsp.InsertTextFormat.Snippet
+                and vim_item.abbr:sub(-1, -1) == "~"
             then
               word = word .. "~"
             end
@@ -284,12 +270,12 @@ return {
           }),
         },
         sources = cmp.config.sources({
-          { name = "copilot", group_index = 2 },
+          { name = "copilot",  group_index = 2 },
           { name = "nvim_lsp", group_index = 2 },
-          { name = "luasnip", group_index = 2 },
+          { name = "luasnip",  group_index = 2 },
         }, {
           { name = "async_path" },
-          { name = "buffer", keyword_length = 3 },
+          { name = "buffer",    keyword_length = 3 },
         }),
         experimental = {
           ghost_text = true,

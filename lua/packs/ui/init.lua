@@ -278,8 +278,6 @@ return {
     -- Statuscolumn added by NVIM-0.9
     "luukvbaal/statuscol.nvim",
 
-    event = { "UIEnter" },
-
     opts = function()
       local builtin = require("statuscol.builtin")
 
@@ -289,10 +287,9 @@ return {
         segments = {
           {
             sign = {
-              name = { "DapBreakpoint" },
+              name = { "Dap.*" },
               maxwidth = 1,
               colwidth = 1,
-              click = builtin.toggle_breakpoint,
             },
           },
           {

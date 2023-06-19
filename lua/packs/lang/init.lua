@@ -7,6 +7,12 @@ return {
 
     lazy = true,
   },
+  -- Java
+  {
+    "mfussenegger/nvim-jdtls",
+
+    lazy = true,
+  },
   -- Markdown
   {
     "atusy/tsnode-marker.nvim",

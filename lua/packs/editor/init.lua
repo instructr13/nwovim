@@ -2,6 +2,20 @@ local C = require("packs.editor.config")
 
 return {
   {
+    -- Dashboard
+    "goolord/alpha-nvim",
+
+    event = "VimEnter",
+
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+
+    opts = function()
+      return require("alpha.themes.dashboard").config
+    end,
+  },
+  {
     "RRethy/vim-illuminate",
 
     event = { "CursorMoved" },
@@ -89,5 +103,15 @@ return {
     dependencies = {
       "JoosepAlviste/nvim-ts-context-commentstring",
     },
+  },
+  {
+    "tzachar/highlight-undo.nvim",
+
+    keys = {
+      "u",
+      "<C-r>",
+    },
+
+    opts = {},
   },
 }
