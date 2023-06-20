@@ -114,4 +114,12 @@ return {
 
     opts = {},
   },
+  {
+    "lewis6991/fileline.nvim",
+  },
+  {
+    "ethanholz/nvim-lastplace",
+
+    opts = {}
+  },
 }

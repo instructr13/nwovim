@@ -4,7 +4,7 @@ local function common(server_name, opts)
   opts = opts or {}
 
   require("lspconfig")[server_name].setup(vim.tbl_deep_extend("error", {
-    capabilities = require("cmp_nvim_lsp").default_capabilities(),
+    capabilities = require("lsp.capabilities").make_capabilities(),
     on_attach = require("lsp.on_attach"),
   }, opts))
 end
@@ -33,7 +33,11 @@ function M.lua_ls()
 end
 
 -- Disable automatic jdtls setup by mason-lspconfig, we'll do it manually with
--- plugin/jdtls.lua
+-- init function of nvim-jdtls
 function M.jdtls() end
+
+-- Disable automatic jdtls setup by mason-lspconfig, we'll do it manually with
+-- opts field of rust-tools.nvim
+function M.rust_analyzer() end
 
 return M

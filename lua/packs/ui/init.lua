@@ -356,13 +356,19 @@ return {
 
     event = { "BufReadPost", "BufNewFile" },
 
-    opts = {
-      char = "▏",
-      context_char = "▏",
-      show_current_context = true,
-      show_current_context_start = true,
-      show_first_indent_level = false,
+    dependencies = {
+      "TheGLander/indent-rainbowline.nvim",
     },
+
+    opts = function()
+      return require("indent-rainbowline").make_opts({
+        char = "▏",
+        context_char = "▏",
+        show_current_context = true,
+        show_current_context_start = true,
+        show_first_indent_level = false,
+      })
+    end,
   },
   {
     "Cassin01/wf.nvim",

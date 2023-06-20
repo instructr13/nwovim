@@ -1,5 +1,8 @@
 local C = require("packs.lsp.config")
 
+local data_dir = require("constants.paths").data_dir
+local join_paths = require("utils.paths").join_paths
+
 return {
   {
     "williamboman/mason.nvim",
@@ -10,11 +13,41 @@ return {
 
     build = ":MasonUpdate",
 
-    opts = {
-      ui = {
-        border = "rounded",
-      },
-    },
+    opts = function()
+      require("mason-registry"):on(
+        "package:install:success",
+        vim.schedule_wrap(function(pkg)
+          if pkg.name == "jdtls" then
+            local base_path = join_paths(
+              data_dir,
+              "nwovim",
+              "packages",
+              "vscode-java-decompiler"
+            )
+
+            vim.notify("Installing vscode-java-decompiler used by jdtls")
+
+            vim.system({
+              "git",
+              "clone",
+              "--depth=1",
+              "https://github.com/dgileadi/vscode-java-decompiler",
+              base_path,
+            }, { stdout = false }, function(obj)
+              if obj.code == 0 and obj.signal == 0 then
+                vim.notify("vscode-java-decompiler installed successfully")
+              end
+            end)
+          end
+        end)
+      )
+
+      return {
+        ui = {
+          border = "rounded",
+        },
+      }
+    end,
   },
   {
     "williamboman/mason-lspconfig.nvim",
@@ -110,7 +143,11 @@ return {
   {
     "lvimuser/lsp-inlayhints.nvim",
 
+    branch = vim.fn.has("NVIM-0.10") == 1 and "anticonceal" or "main",
+
     lazy = true,
+
+    opts = {},
 
     init = function()
       C.inlayhints_setup()

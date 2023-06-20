@@ -11,6 +11,11 @@ return {
     event = { "BufReadPost", "BufNewFile", "CmdlineChanged" },
 
     dependencies = {
+      {
+        "LiadOz/nvim-dap-repl-highlights",
+
+        opts = {},
+      },
       "HiPhish/nvim-ts-rainbow2",
       "windwp/nvim-ts-autotag",
       "RRethy/nvim-treesitter-endwise",

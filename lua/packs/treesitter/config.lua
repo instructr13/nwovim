@@ -14,6 +14,8 @@ function M.treesitter()
     }
   )
 
+  require("nvim-dap-repl-highlights") -- Load nvim-dap-repl-highlights
+
   require("nvim-treesitter.configs").setup({
     ensure_installed = {
       -- We need this
@@ -25,6 +27,9 @@ function M.treesitter()
       "bash",
       "markdown",
       "markdown_inline",
+
+      -- Used by nvim-dap-repl-highlights
+      "dap_repl",
     },
     auto_install = true,
     highlight = {
