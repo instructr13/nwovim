@@ -8,7 +8,15 @@ return {
 
     build = ":TSUpdate",
 
-    event = { "BufReadPost", "BufNewFile", "CmdlineChanged" },
+    event = { "User NormalFile", "CmdlineChanged" },
+
+    cmd = {
+      "TSInstall",
+      "TSUninstall",
+      "TSInstallSync",
+      "TSInstallInfo",
+      "TSUpdate",
+    },
 
     dependencies = {
       {
@@ -19,6 +27,7 @@ return {
       "HiPhish/nvim-ts-rainbow2",
       "windwp/nvim-ts-autotag",
       "RRethy/nvim-treesitter-endwise",
+      "nvim-treesitter/playground",
       { "yioneko/nvim-yati", version = false },
     },
 

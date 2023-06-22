@@ -28,6 +28,9 @@ function M.treesitter()
       "markdown",
       "markdown_inline",
 
+      -- Used to treesitter query development
+      "query",
+
       -- Used by nvim-dap-repl-highlights
       "dap_repl",
     },
@@ -35,6 +38,9 @@ function M.treesitter()
     highlight = {
       enable = true,
       additional_vim_regex_highlighting = false,
+    },
+    playground = {
+      enable = true
     },
     rainbow = {
       enable = true,

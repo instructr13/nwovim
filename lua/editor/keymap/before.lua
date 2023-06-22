@@ -31,10 +31,10 @@ keymap("n", "<Tab>", function()
   local filetype = vim.opt_local.filetype:get()
 
   if
-      vim.tbl_contains(
-        require("constants.buffers").window.ignore_buf_change_filetypes,
-        filetype
-      )
+    vim.tbl_contains(
+      require("constants.buffers").window.ignore_buf_change_filetypes,
+      filetype
+    )
   then
     return
   end
@@ -46,21 +46,16 @@ keymap("n", "<S-Tab>", function()
   local filetype = vim.opt_local.filetype:get()
 
   if
-      vim.tbl_contains(
-        require("constants.buffers").window.ignore_buf_change_filetypes,
-        filetype
-      )
+    vim.tbl_contains(
+      require("constants.buffers").window.ignore_buf_change_filetypes,
+      filetype
+    )
   then
     return
   end
 
   vim.cmd.bprev()
 end, "Previous Buffer")
-
--- nohlsearch
-keymap("n", "<leader>h", function()
-  vim.cmd("let @/=''")
-end, "nohlsearch")
 
 -- split
 keymap("n", "s", "")
@@ -164,3 +159,12 @@ end, "Move to the next diagnostic")
 
 keymap("c", "<C-f>", "<Nop>")
 keymap("n", "q:", "<Nop>")
+
+keymap("n", "<esc>", function()
+  require("notify").dismiss({})
+
+  vim.cmd("let @/=''")
+end, "Nohlsearch / Dissmiss notifications")
+
+keymap("x", "<", "<gv", "Shift left and reselect")
+keymap("x", ">", ">gv", "Shift left and reselect")

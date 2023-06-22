@@ -52,10 +52,12 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
 
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "BufReadPost", "BufNewFile" },
 
     opts = function()
       local handlers = require("lsp.handlers")
+
+      require("neoconf")
 
       return {
         ensure_installed = { "lua_ls", "jsonls" },
@@ -77,7 +79,7 @@ return {
   {
     "jay-babu/mason-null-ls.nvim",
 
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "User NormalFile" },
 
     opts = {
       ensure_installed = { "stylua" },
@@ -112,9 +114,20 @@ return {
     },
   },
   {
+    "KostkaBrukowa/definition-or-references.nvim",
+
+    lazy = true,
+
+    opts = {
+      on_references_result = function()
+        vim.cmd("Trouble lsp_references")
+      end,
+    },
+  },
+  {
     "seblj/nvim-lsp-extras",
 
-    event = { "BufReadPost", "BufNewFile" },
+    event = { "User NormalFile" },
 
     opts = {
       signature = false,
@@ -138,19 +151,6 @@ return {
 
     init = function()
       C.format_setup()
-    end,
-  },
-  {
-    "lvimuser/lsp-inlayhints.nvim",
-
-    branch = vim.fn.has("NVIM-0.10") == 1 and "anticonceal" or "main",
-
-    lazy = true,
-
-    opts = {},
-
-    init = function()
-      C.inlayhints_setup()
     end,
   },
   {
@@ -180,5 +180,12 @@ return {
     opts = {
       use_diagnostic_signs = true,
     },
+  },
+  {
+    "folke/neoconf.nvim",
+
+    lazy = true,
+
+    opts = {},
   },
 }

@@ -21,10 +21,6 @@ function M.register(client, buffer, _cap)
 
   local cap = _cap or client.server_capabilities
 
-  _G.__cap = {}
-
-  table.insert(_G.__cap, cap)
-
   if cap["hoverProvider"] then
     keymap("K", function()
       local winid = require("ufo").peekFoldedLinesUnderCursor()
@@ -57,26 +53,36 @@ function M.register(client, buffer, _cap)
     end, "Get Signature Help")
   end
 
-  if cap["definitionProvider"] then
-    local function definition()
-      local ok, trouble = pcall(require, "trouble")
-
-      if not ok then
-        vim.lsp.buf.definition()
-
-        return
-      end
-
-      trouble.toggle("lsp_definitions")
-    end
-
-    command(buffer, "LspDefinition", function()
-      definition()
+  if cap["definitionProvider"] or cap["referencesProvider"] then
+    command(buffer, "LspDefinitionOrReferences", function()
+      require("definition-or-references").definition_or_references()
     end, "Go To Defenition")
 
     keymap("gd", function()
-      definition()
+      require("definition-or-references").definition_or_references()
     end, "Go To Definition")
+
+    keymap("<C-LeftMouse>", function()
+      vim.api.nvim_feedkeys(
+        vim.api.nvim_replace_termcodes("<LeftMouse>", false, false, true),
+        "in",
+        false
+      )
+
+      -- defer to let nvim refresh to get correct position
+      vim.defer_fn(function()
+        require("definition-or-references").definition_or_references()
+      end, 0)
+    end)
+  end
+
+  if cap["referencesProvider"] then
+    keymap("<a-n>", function()
+      require("illuminate").next_reference({ wrap = true })
+    end, "Next Reference")
+    keymap("<a-p>", function()
+      require("illuminate").next_reference({ wrap = true, reverse = true })
+    end, "Previous Reference")
   end
 
   if cap["declarationProvider"] then
@@ -119,35 +125,6 @@ function M.register(client, buffer, _cap)
     keymap("gI", function()
       vim.lsp.buf.implementation()
     end, "Go To Implementation")
-  end
-
-  if cap["referencesProvider"] then
-    local function references()
-      local ok, trouble = pcall(require, "trouble")
-
-      if not ok then
-        vim.lsp.buf.references()
-
-        return
-      end
-
-      trouble.toggle("lsp_references")
-    end
-
-    command(buffer, "LspReferences", function()
-      references()
-    end, "Go To References")
-
-    keymap("gR", function()
-      references()
-    end, "Go To References")
-
-    keymap("<a-n>", function()
-      require("illuminate").next_reference({ wrap = true })
-    end, "Next Reference")
-    keymap("<a-p>", function()
-      require("illuminate").next_reference({ wrap = true, reverse = true })
-    end, "Previous Reference")
   end
 
   if cap["documentSymbolProvider"] then
@@ -215,14 +192,18 @@ function M.register(client, buffer, _cap)
       vim.lsp.codelens.run()
     end, "Run CodeLens")
   end
+
+  if cap["inlayHintProvider"] then
+    vim.lsp.buf.inlay_hint(buffer, true)
+  end
 end
 
 ---Remove configured keymaps and commands with the given server capabilities.
 ---@param buffer number Buffer number
 ---@param cap table Capabilities table
 function M.unregister(buffer, cap)
-  local function unmap(modes, lhs, opts)
-    local opts = vim.tbl_extend("force", opts or {}, { buffer = buffer })
+  local function unmap(modes, lhs, opts_)
+    local opts = vim.tbl_extend("force", opts_ or {}, { buffer = buffer })
 
     -- Ignore errors
     pcall(vim.keymap.del, modes, lhs, opts)
@@ -304,6 +285,10 @@ function M.unregister(buffer, cap)
     del_command("LspCodeLensRun")
 
     unmap("n", "<leader>ll")
+  end
+
+  if cap["inlayHintProvider"] then
+    vim.lsp.buf.inlay_hint(buffer, false)
   end
 end
 

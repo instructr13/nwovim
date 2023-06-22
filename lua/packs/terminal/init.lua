@@ -2,6 +2,10 @@ return {
   {
     "akinsho/toggleterm.nvim",
 
+    keys = {
+      "<C-t>"
+    },
+
     version = "*",
 
     opts = {

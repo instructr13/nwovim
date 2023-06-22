@@ -6,29 +6,24 @@ local icons = {
   Info = "",
   Hint = "",
 }
-
-local function set_virtual_text_prefix()
+local function config_diagnostic()
   vim.diagnostic.config({
+    float = {
+      border = "rounded",
+    },
+    signs = false,
     virtual_text = {
       spacing = 4,
       source = "if_many",
       prefix = vim.fn.has("nvim-0.10") == 0 and "●" or function(diagnostic)
         for severity, icon in pairs(icons) do
           if
-            diagnostic.severity == vim.diagnostic.severity[severity:upper()]
+              diagnostic.severity == vim.diagnostic.severity[severity:upper()]
           then
             return icon .. " "
           end
         end
       end,
-    },
-  })
-end
-
-local function set_border()
-  vim.diagnostic.config({
-    float = {
-      border = "rounded",
     },
   })
 end
@@ -42,8 +37,7 @@ local function define_signs()
 end
 
 function M.setup()
-  set_virtual_text_prefix()
-  set_border()
+  config_diagnostic()
   define_signs()
 end
 

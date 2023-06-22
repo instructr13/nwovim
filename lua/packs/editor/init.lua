@@ -5,11 +5,17 @@ return {
     -- Dashboard
     "goolord/alpha-nvim",
 
-    event = "VimEnter",
+    lazy = true,
+
+    cmd = { "Alpha" },
 
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
+
+    init = function()
+      C.alpha_setup()
+    end,
 
     opts = function()
       return require("alpha.themes.dashboard").config
@@ -18,12 +24,30 @@ return {
   {
     "RRethy/vim-illuminate",
 
-    event = { "CursorMoved" },
+    lazy = true,
+
+    init = function()
+      vim.api.nvim_create_autocmd({ "CursorMoved" }, {
+        group = vim.api.nvim_create_augroup(
+          "illuminate_init",
+          { clear = true }
+        ),
+        callback = function(opts)
+          if vim.bo[opts.buf].buftype ~= "" then
+            return
+          end
+
+          require("illuminate") -- Load
+
+          vim.api.nvim_del_augroup_by_name("illuminate_init")
+        end,
+      })
+    end,
   },
   {
     "andymass/vim-matchup",
 
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "User NormalFile" },
 
     init = function()
       C.matchup_setup()
@@ -50,7 +74,7 @@ return {
     -- colorcolumn
     "Bekaboo/deadcolumn.nvim",
 
-    event = { "BufReadPre", "CursorMoved" },
+    event = { "CursorMoved" },
 
     opts = {
       "cursor",
@@ -85,7 +109,7 @@ return {
     "numToStr/Comment.nvim",
 
     keys = {
-      "gc",
+      { "gc", mode = { "n", "v" } },
       "gb",
       "gcO",
       "gco",
@@ -116,10 +140,12 @@ return {
   },
   {
     "lewis6991/fileline.nvim",
+
+    lazy = true,
   },
   {
     "ethanholz/nvim-lastplace",
 
-    opts = {}
+    opts = {},
   },
 }

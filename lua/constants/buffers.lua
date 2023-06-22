@@ -10,6 +10,9 @@ local quit_with_q = {
 
     -- lsp
     "lspinfo",
+
+    -- nvim-treesitter/playground
+    "tsplayground",
   },
 }
 

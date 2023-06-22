@@ -10,7 +10,6 @@ return {
     "echasnovski/mini.bufremove",
 
     lazy = true,
-
     init = function()
       keymap("n", "<leader>q", function()
         require("mini.bufremove").delete()
@@ -20,7 +19,7 @@ return {
   {
     "LunarVim/bigfile.nvim",
 
-    event = { "BufReadPre" },
+    event = { "User NormalFile" },
 
     opts = {
       filesize = 4,

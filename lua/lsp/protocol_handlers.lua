@@ -31,8 +31,6 @@ function M.setup()
       vim.schedule(function()
         require("lsp.capabilities").register(client, bufnr, cap)
       end)
-
-      _G.__cap = cap
     end
 
     return original_register_capability(_, result, ctx)
@@ -57,8 +55,6 @@ function M.setup()
       end
 
       require("lsp.capabilities").unregister(bufnr, cap)
-
-      _G.__cap = cap
     end
 
     return original_unregister_capability(_, result, ctx)

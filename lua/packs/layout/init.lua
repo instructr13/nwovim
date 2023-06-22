@@ -10,6 +10,8 @@ return {
       {
         "nvim-neo-tree/neo-tree.nvim",
 
+        lazy = true,
+
         cmd = "Neotree",
 
         dependencies = {
@@ -20,12 +22,35 @@ return {
 
         branch = "v2.x",
 
+        keys = {
+          { "\\", "<cmd>Neotree toggle<cr>", desc = "Toggle Neo-tree" },
+        },
+
         init = function()
           vim.g.neo_tree_remove_legacy_commands = 1
 
-          local keymap = require("utils.keymap").keymap
+          -- Code from https://github.com/NormalNvim/NormalNvim/blob/main/lua/base/3-autocmds.lua
+          vim.api.nvim_create_autocmd("BufEnter", {
+            desc = "Open Neo-Tree on startup with directory",
+            group = vim.api.nvim_create_augroup(
+              "neotree_start",
+              { clear = true }
+            ),
+            once = true,
+            callback = function()
+              if package.loaded["neo-tree"] then
+                vim.api.nvim_del_augroup_by_name("neotree_start")
+              else
+                local stats = vim.loop.fs_stat(vim.api.nvim_buf_get_name(0))
 
-          keymap("n", "\\", "<cmd>Neotree toggle<cr>", "Toggle Neo-tree")
+                if stats and stats.type == "directory" then
+                  vim.api.nvim_del_augroup_by_name("neotree_start")
+
+                  require("neo-tree")
+                end
+              end
+            end,
+          })
         end,
 
         opts = {

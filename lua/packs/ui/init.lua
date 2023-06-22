@@ -145,7 +145,7 @@ return {
         bottom_search = true,
         command_palette = true,
         long_message_to_split = true,
-        inc_rename = true,
+        --inc_rename = true,
         lsp_doc_border = true,
       },
     },
@@ -154,13 +154,11 @@ return {
     -- Statusline
     "rebelot/heirline.nvim",
 
-    event = { "UIEnter" },
+    event = "BufEnter",
 
     dependencies = {
       {
         "jonahgoldwastaken/copilot-status.nvim",
-
-        event = "BufReadPost",
 
         dependencies = {
           "copilot.lua",
@@ -182,30 +180,13 @@ return {
       C.statusline()
     end,
   },
-  --[[
-  {
-    -- Statusline
-    "strash/everybody-wants-that-line.nvim",
-
-    event = { "UIEnter" },
-
-    opts = {
-      filepath = {
-        enabled = false -- Barbecue handles this
-      },
-      filename = {
-        enabled = false
-      }
-    }
-  },
-  ]]
   {
     -- Bufferline
     "akinsho/bufferline.nvim",
 
     version = "*",
 
-    event = { "Colorscheme" },
+    event = "BufEnter",
 
     dependencies = {
       "nvim-tree/nvim-web-devicons",
@@ -221,7 +202,7 @@ return {
 
     enabled = vim.fn.has("NVIM-0.10") == 1,
 
-    event = { "BufReadPost", "BufNewFile" },
+    event = "User NormalFile",
 
     dependencies = {
       "nvim-tree/nvim-web-devicons",
@@ -254,7 +235,7 @@ return {
 
     enabled = vim.fn.has("NVIM-0.10") ~= 1,
 
-    event = { "BufReadPost", "BufNewFile" },
+    event = "User NormalFile",
 
     dependencies = {
       "SmiteshP/nvim-navic",
@@ -268,7 +249,7 @@ return {
   {
     "lewis6991/satellite.nvim",
 
-    event = { "BufReadPost", "BufNewFile" },
+    event = "User NormalFile",
 
     opts = {
       excluded_filetypes = { "neo-tree" },
@@ -277,6 +258,8 @@ return {
   {
     -- Statuscolumn added by NVIM-0.9
     "luukvbaal/statuscol.nvim",
+
+    lazy = true,
 
     opts = function()
       local builtin = require("statuscol.builtin")
@@ -345,7 +328,7 @@ return {
   {
     "mawkler/modicator.nvim",
 
-    event = { "ModeChanged" },
+    event = "ModeChanged",
 
     opts = {
       show_warnings = false,
@@ -354,7 +337,7 @@ return {
   {
     "lukas-reineke/indent-blankline.nvim",
 
-    event = { "BufReadPost", "BufNewFile" },
+    event = { "BufReadPre", "BufNewFile" },
 
     dependencies = {
       "TheGLander/indent-rainbowline.nvim",
@@ -371,86 +354,10 @@ return {
     end,
   },
   {
-    "Cassin01/wf.nvim",
+    "folke/which-key.nvim",
 
-    version = "*",
+    event = "VeryLazy",
 
-    config = function()
-      require("wf").setup({
-        theme = "chad",
-      })
-
-      local which_key = require("wf.builtin.which_key")
-      local mark = require("wf.builtin.mark")
-
-      -- Mark
-      vim.keymap.set(
-        "n",
-        "'",
-        -- mark(opts?: table) -> function
-        -- opts?: option
-        mark(),
-        {
-          nowait = true,
-          noremap = true,
-          silent = true,
-          desc = "[wf.nvim] mark",
-        }
-      )
-
-      -- a timer to call a callback after a specified number of milliseconds.
-      local function timeout(ms, callback)
-        local uv = vim.loop
-        local timer = uv.new_timer()
-
-        if not timer then
-          error("Couldn't create the timer")
-        end
-
-        local _callback = vim.schedule_wrap(function()
-          uv.timer_stop(timer)
-          uv.close(timer)
-          callback()
-        end)
-
-        uv.timer_start(timer, ms, 0, _callback)
-      end
-
-      local function set_timeout_keymap(key, group_name)
-        timeout(100, function()
-          vim.keymap.set(
-            "n",
-            key,
-            which_key({ text_insert_in_advance = key }),
-            { noremap = true, silent = true, desc = "[wf.nvim] which-key /" }
-          )
-        end)
-
-        vim.api.nvim_create_autocmd({ "BufEnter", "BufAdd" }, {
-          group = vim.api.nvim_create_augroup(
-            "wf_" .. group_name,
-            { clear = true }
-          ),
-          callback = function()
-            timeout(100, function()
-              vim.keymap.set(
-                "n",
-                key,
-                which_key({ text_insert_in_advance = key }),
-                {
-                  noremap = true,
-                  silent = true,
-                  desc = "[wf.nvim] which-key /",
-                  buffer = true,
-                }
-              )
-            end)
-          end,
-        })
-      end
-
-      set_timeout_keymap("<Space>", "leader")
-      set_timeout_keymap("<Localleader>", "local_leader")
-    end,
+    opts = {}
   },
 }
