@@ -1,3 +1,5 @@
+local C = require("packs.dap.config")
+
 return {
   {
     {
@@ -6,17 +8,23 @@ return {
 
         lazy = true,
 
+        init = function()
+          C.dap_setup()
+        end,
+
         config = function()
-          require("mason-nvim-dap")
-          require("dapui")
-          require("nvim-dap-virtual-text")
+          C.dap()
         end,
 
         dependencies = {
           {
             "rcarriga/nvim-dap-ui",
 
-            opts = {},
+            opts = {
+              floating = {
+                border = "rounded",
+              },
+            },
           },
           {
             "theHamsta/nvim-dap-virtual-text",

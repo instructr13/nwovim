@@ -279,10 +279,10 @@ function M.statusline()
       local filetype = self.filetype
 
       self.icon, self.icon_color =
-          require("nvim-web-devicons").get_icon_color_by_filetype(
-            filetype,
-            { default = true }
-          )
+        require("nvim-web-devicons").get_icon_color_by_filetype(
+          filetype,
+          { default = true }
+        )
     end,
 
     provider = function(self)
@@ -329,7 +329,7 @@ function M.statusline()
       provider = "",
       hl = function()
         local fg = (not vim.bo.modifiable or vim.bo.readonly) and "orange"
-            or "surface1"
+          or "surface1"
 
         return { fg = fg }
       end,
@@ -386,9 +386,9 @@ function M.statusline()
         local idx = fn.getqflist({ idx = 0 }).idx
 
         if
-            #self.qflist > 0
-            and idx ~= nil
-            and self.qflist[idx]["_idx"] ~= nil
+          #self.qflist > 0
+          and idx ~= nil
+          and self.qflist[idx]["_idx"] ~= nil
         then
           return self.qflist[idx]["_idx"]
         else
@@ -427,8 +427,8 @@ function M.statusline()
         if #self.qflist > 0 then
           for _, t in ipairs(self.qflist) do
             if
-                t.valid == 1 and #self.buffers == 0
-                or t.valid == 1 and self.buffers[#self.buffers] ~= t.bufnr
+              t.valid == 1 and #self.buffers == 0
+              or t.valid == 1 and self.buffers[#self.buffers] ~= t.bufnr
             then
               table.insert(self.buffers, t.bufnr)
             end
@@ -459,7 +459,7 @@ function M.statusline()
   }
 
   QuickFixBlock =
-      utils.insert(QuickFixBlock, QuickFixIcon, QuickFixText, Separator)
+    utils.insert(QuickFixBlock, QuickFixIcon, QuickFixText, Separator)
   Left = utils.insert(Left, QuickFixBlock)
 
   local Diagnostics = {
@@ -479,13 +479,13 @@ function M.statusline()
 
     init = function(self)
       self.errors, self.error_lnum =
-          get_diagnostic_object(vim.diagnostic.severity.ERROR)
+        get_diagnostic_object(vim.diagnostic.severity.ERROR)
       self.warnings, self.warn_lnum =
-          get_diagnostic_object(vim.diagnostic.severity.WARN)
+        get_diagnostic_object(vim.diagnostic.severity.WARN)
       self.info, self.info_lnum =
-          get_diagnostic_object(vim.diagnostic.severity.INFO)
+        get_diagnostic_object(vim.diagnostic.severity.INFO)
       self.hints, self.hint_lnum =
-          get_diagnostic_object(vim.diagnostic.severity.HINT)
+        get_diagnostic_object(vim.diagnostic.severity.HINT)
 
       self.ok = self.errors + self.warnings + self.info + self.hints == 0
     end,
@@ -819,59 +819,6 @@ function M.statusline()
     end,
 
     hl = "Debug",
-
-    Separator,
-    {
-      provider = "",
-      on_click = {
-        callback = function()
-          require("dap").step_into()
-        end,
-        name = "heirline_dap_step_into",
-      },
-    },
-    Space,
-    {
-      provider = "",
-      on_click = {
-        callback = function()
-          require("dap").step_out()
-        end,
-        name = "heirline_dap_step_out",
-      },
-    },
-    Space,
-    {
-      provider = " ",
-      on_click = {
-        callback = function()
-          require("dap").step_over()
-        end,
-        name = "heirline_dap_step_over",
-      },
-    },
-    Space,
-    {
-      provider = "",
-      on_click = {
-        callback = function()
-          require("dap").run_last()
-        end,
-        name = "heirline_dap_run_last",
-      },
-    },
-    Space,
-    {
-      provider = " ",
-      on_click = {
-        callback = function()
-          require("dap").terminate()
-          require("dapui").close({})
-        end,
-        name = "heirline_dap_close",
-      },
-    },
-    Space,
   }
 
   Right = utils.insert(Right, DAPMessages)
@@ -915,7 +862,7 @@ function M.statusline()
   }
 
   IndentBlock =
-      utils.insert(IndentBlock, Separator, IndentIcon, IndentIndicator)
+    utils.insert(IndentBlock, Separator, IndentIcon, IndentIndicator)
   Right = utils.insert(Right, IndentBlock)
 
   local FileSize = {
@@ -998,7 +945,7 @@ function M.statusline()
       local current_lnum = vim.api.nvim_win_get_cursor(0)[1]
       local total_lines = vim.api.nvim_buf_line_count(0)
       local i = math.floor((current_lnum - 1) / total_lines * #self.segments)
-          + 1
+        + 1
 
       return self.segments[i]:rep(2)
     end,

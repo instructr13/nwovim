@@ -57,26 +57,6 @@ keymap("n", "<S-Tab>", function()
   vim.cmd.bprev()
 end, "Previous Buffer")
 
--- split
-keymap("n", "s", "")
-keymap("n", "ss", function()
-  vim.cmd.split()
-end, "Horizontal Split")
-
-keymap("n", "sv", function()
-  vim.cmd.vsplit()
-end, "Vertical Split")
-
--- window movement
-keymap("n", "<C-h>", "<C-w>h", "Left Window")
-keymap("n", "<C-j>", "<C-w>j", "Down Window")
-keymap("n", "<C-k>", "<C-w>k", "Up Window")
-keymap("n", "<C-l>", "<C-w>l", "Right Window")
-keymap("t", "<C-h>", [[<C-\><C-n><C-w>h]], "Left Window (in Terminal)")
-keymap("t", "<C-j>", [[<C-\><C-n><C-w>j]], "Down Window (in Terminal)")
-keymap("t", "<C-k>", [[<C-\><C-n><C-w>k]], "Up Window (in Terminal)")
-keymap("t", "<C-l>", [[<C-\><C-n><C-w>l]], "Right Window (in Terminal)")
-
 keymap("n", "Y", "yg$", "Yank after cursor")
 
 -- join lines without moving cursor
@@ -166,5 +146,44 @@ keymap("n", "<esc>", function()
   vim.cmd("let @/=''")
 end, "Nohlsearch / Dissmiss notifications")
 
+keymap("n", "j", function()
+  if vim.v.count == 0 then
+    return "gj"
+  else
+    return "j'"
+  end
+end, "Move cursor down", { expr = true })
+
+keymap("n", "k", function()
+  if vim.v.count == 0 then
+    return "gk"
+  else
+    return "k'"
+  end
+end, "Move cursor up", { expr = true })
+
+-- split and vsplit
+keymap("n", "-", "<cmd>split<cr>", "Split horizontally")
+keymap("n", "|", "<cmd>vsplit<cr>", "Split vertically")
+
+keymap("i", "<C-BS>", "<C-w>", "Kill word")
+
+keymap("n", "x", function()
+  if vim.fn.col(".") == 1 then
+    local line = vim.api.nvim_get_current_line()
+
+    if line:match("^%s*$") then
+      vim.cmd("normal! dd$")
+    else
+      vim.cmd("normal! " .. (vim.v.count > 0 and vim.v.count or "") .. '"_x')
+    end
+  else
+    vim.cmd("normal! " .. (vim.v.count > 0 and vim.v.count or "") .. '"_x')
+  end
+end, "Delete character without yanking")
+
+keymap("v", "x", '"_x', "Delete character without yanking")
+
 keymap("x", "<", "<gv", "Shift left and reselect")
 keymap("x", ">", ">gv", "Shift left and reselect")
+

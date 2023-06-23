@@ -74,6 +74,7 @@ return {
           require("lspconfig.ui.windows").default_options.border = "rounded"
         end,
       },
+      "b0o/SchemaStore.nvim",
     },
   },
   {

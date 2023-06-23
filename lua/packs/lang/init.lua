@@ -1,6 +1,7 @@
 local C = require("packs.lang.config")
 
 local join_paths = require("utils.paths").join_paths
+local keymap = require("utils.keymap").keymap
 
 return {
   -- Lua
@@ -52,8 +53,6 @@ return {
     end,
 
     opts = function()
-      local rust_tools = require("rust-tools")
-
       local extension_path = join_paths(
         require("mason-registry").get_package("codelldb"):get_install_path(),
         "extension"
@@ -74,18 +73,11 @@ return {
         server = {
           on_attach = function(client, buffer)
             -- Hover actions
-            vim.keymap.set(
-              "n",
-              "gK",
-              rust_tools.hover_actions.hover_actions,
-              { buffer = buffer }
-            )
-
-            -- Code action groups
-            vim.keymap.set(
+            keymap(
               "n",
               "<F5>",
-              rust_tools.code_action_group.code_action_group,
+              require("rust-tools").debuggables.debuggables,
+              "Debugger: Start",
               { buffer = buffer }
             )
 
@@ -100,6 +92,7 @@ return {
           },
         },
         tools = {
+          executor = require("rust-tools.executors").toggleterm,
           hover_actions = {
             auto_focus = true,
           },

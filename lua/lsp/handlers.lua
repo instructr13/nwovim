@@ -32,6 +32,30 @@ function M.lua_ls()
   })
 end
 
+function M.jsonls()
+  common("jsonls", {
+    settings = {
+      json = {
+        schemas = require("schemastore").json.schemas(),
+        validate = { enable = true },
+      },
+    },
+  })
+end
+
+function M.yamlls()
+  common("yamlls", {
+    settings = {
+      yaml = {
+        schemaStore = {
+          enable = false,
+        },
+        schemas = require("schemastore").yaml.schemas(),
+      },
+    },
+  })
+end
+
 -- Disable automatic jdtls setup by mason-lspconfig, we'll do it manually with
 -- init function of nvim-jdtls
 function M.jdtls() end
