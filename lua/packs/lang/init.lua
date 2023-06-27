@@ -103,6 +103,24 @@ return {
       }
     end,
   },
+  -- Flutter
+  {
+    "akinsho/flutter-tools.nvim",
+
+    ft = { "dart" },
+
+    opts = function()
+      return {
+        debugger = {
+          enabled = true,
+        },
+        lsp = {
+          on_attach = require("lsp.on_attach"),
+          capabilities = require("lsp.capabilities").make_capabilities(),
+        },
+      }
+    end,
+  },
   -- Markdown
   {
     "atusy/tsnode-marker.nvim",
