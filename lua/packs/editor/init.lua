@@ -122,7 +122,73 @@ return {
 
     event = { "InsertEnter", "CmdlineEnter" },
 
-    opts = {},
+    config = function()
+      local ultimate_autopair = require("ultimate-autopair")
+      local utils = require("ultimate-autopair.utils")
+
+      ultimate_autopair.setup()
+
+      local key_bs = vim.api.nvim_replace_termcodes("<BS>", true, false, true)
+
+      ultimate_autopair.init({
+        ultimate_autopair.extend_default({
+          bs = {
+            space = "balance",
+            indent_ignore = true,
+          },
+          fastwarp = {
+            multi = true,
+            {},
+            {
+              faster = true,
+              map = "<C-A-e>",
+              cmap = "<C-A-e>",
+            },
+          },
+        }),
+        {
+          profile = "raw",
+          {
+            p = 2,
+            check = function(o)
+              if o.key ~= key_bs or o.incmd then
+                return
+              end
+
+              if o.line:sub(1, o.col - 1):find("[^%s]") then
+                return
+              end
+
+              if o.col == 1 then
+                return
+              end
+
+              local prev_line = o.lines[o.row - 1]
+
+              if not prev_line then
+                return
+              end
+
+              if prev_line:gsub("%s+", "") ~= "" then
+                return utils.create_act({
+                  { "home" },
+                  { "delete", 1, o.col - 1 },
+                })
+              end
+
+              return utils.create_act({
+                { "home" },
+                { "delete", 1, #prev_line },
+                { "l", o.col - 1 - #prev_line },
+              })
+            end,
+            get_map = function(mode)
+              return mode == "i" and { "<BS>" }
+            end,
+          },
+        },
+      })
+    end,
   },
   --[[
   {
