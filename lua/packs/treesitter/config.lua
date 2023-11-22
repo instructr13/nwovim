@@ -28,6 +28,9 @@ function M.treesitter()
       "markdown",
       "markdown_inline",
 
+      -- Used by neoconf.nvim
+      "jsonc",
+
       -- Used to treesitter query development
       "query",
 

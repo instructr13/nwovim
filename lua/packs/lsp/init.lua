@@ -95,7 +95,7 @@ return {
       "williamboman/mason.nvim",
 
       {
-        "jose-elias-alvarez/null-ls.nvim",
+        "nvimtools/none-ls.nvim",
 
         opts = function()
           local builtins = require("null-ls").builtins

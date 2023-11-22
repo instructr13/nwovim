@@ -45,6 +45,43 @@ return {
     end,
   },
   {
+    "hiphish/rainbow-delimiters.nvim",
+
+    event = { "User NormalFile" },
+
+    config = function()
+      local rainbow_delimiters = require("rainbow-delimiters")
+
+      require("rainbow-delimiters.setup").setup({
+        strategy = {
+          [""] = rainbow_delimiters.strategy["global"],
+          vim = rainbow_delimiters.strategy["local"],
+        },
+        query = {
+          [""] = "rainbow-delimiters",
+          latex = "rainbow-blocks",
+          lua = "rainbow-blocks",
+        },
+        highlight = {
+          "RainbowDelimiterRed",
+          "RainbowDelimiterYellow",
+          "RainbowDelimiterBlue",
+          "RainbowDelimiterOrange",
+          "RainbowDelimiterGreen",
+          "RainbowDelimiterViolet",
+          "RainbowDelimiterCyan",
+        },
+      })
+
+      -- Manually enable for first loading
+      local lang = vim.treesitter.language.get_lang(vim.bo.filetype)
+
+      if require("rainbow-delimiters.config").enabled_for(lang) then
+        require("rainbow-delimiters.lib").attach(vim.api.nvim_get_current_buf())
+      end
+    end,
+  },
+  {
     "andymass/vim-matchup",
 
     event = { "User NormalFile" },

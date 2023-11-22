@@ -24,7 +24,6 @@ return {
 
         opts = {},
       },
-      "HiPhish/nvim-ts-rainbow2",
       "windwp/nvim-ts-autotag",
       "RRethy/nvim-treesitter-endwise",
       "nvim-treesitter/playground",

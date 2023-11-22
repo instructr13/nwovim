@@ -193,8 +193,8 @@ function M.register(client, buffer, _cap)
     end, "Run CodeLens")
   end
 
-  if cap["inlayHintProvider"] then
-    vim.lsp.buf.inlay_hint(buffer, true)
+  if cap["inlayHintProvider"] and vim.lsp.inlay_hint ~= nil then
+    vim.lsp.inlay_hint(buffer, true)
   end
 end
 
@@ -287,8 +287,8 @@ function M.unregister(buffer, cap)
     unmap("n", "<leader>ll")
   end
 
-  if cap["inlayHintProvider"] then
-    vim.lsp.buf.inlay_hint(buffer, false)
+  if cap["inlayHintProvider"] and vim.lsp.inlay_hint ~= nil then
+    vim.lsp.inlay_hint(buffer, false)
   end
 end
 

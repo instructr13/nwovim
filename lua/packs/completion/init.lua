@@ -9,26 +9,6 @@ return {
     dependencies = {
       { "saadparwaiz1/cmp_luasnip" },
       { "lukas-reineke/cmp-under-comparator" },
-      {
-        "zbirenbaum/copilot-cmp",
-
-        dependencies = {
-          "zbirenbaum/copilot.lua",
-
-          cmd = "Copilot",
-
-          opts = {
-            suggestion = {
-              enabled = false,
-            },
-            panel = {
-              enabled = false,
-            },
-          },
-        },
-
-        opts = {},
-      },
       { "hrsh7th/cmp-nvim-lsp" },
       { "hrsh7th/cmp-nvim-lsp-document-symbol" },
       { "hrsh7th/cmp-buffer" },
@@ -50,5 +30,27 @@ return {
     opts = function()
       return C.cmp_opts()
     end,
+  },
+  {
+    "zbirenbaum/copilot-cmp",
+
+    lazy = true,
+
+    dependencies = {
+      "zbirenbaum/copilot.lua",
+
+      cmd = "Copilot",
+
+      opts = {
+        suggestion = {
+          enabled = false,
+        },
+        panel = {
+          enabled = false,
+        },
+      },
+    },
+
+    opts = {},
   },
 }

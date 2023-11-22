@@ -203,7 +203,7 @@ function M.statusline()
   local LSPActive = {
     condition = function()
       return not conditions.buffer_matches({
-        buftype = { "nofile", "quickfix", "help", "terminal" },
+        buftype = { "nofile", "quickfix", "help", "terminal", "prompt" },
       })
     end,
 

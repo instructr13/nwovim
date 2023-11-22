@@ -102,7 +102,13 @@ function M.cmp_opts()
     sorting = {
       priority_weight = 2,
       comparators = {
-        require("copilot_cmp.comparators").prioritize,
+        function(entry1, entry2)
+          if vim.bo.buftype == "nofile" then
+            return false
+          end
+
+          return require("copilot_cmp.comparators").prioritize(entry1, entry2)
+        end,
         cmp.config.compare.offset,
         cmp.config.compare.exact,
         cmp.config.compare.score,

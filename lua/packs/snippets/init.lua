@@ -26,9 +26,5 @@ return {
     dependencies = {
       "LuaSnip", -- TODO: include vimtex
     },
-
-    opts = {
-      use_treesitter = true,
-    },
   },
 }

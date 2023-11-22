@@ -11,10 +11,10 @@ return {
     priority = 1000,
 
     opts = {
-      flavour = "macchiato",
+      flavour = "mocha",
       background = {
         light = "latte",
-        dark = "macchiato",
+        dark = "mocha",
       },
       custom_highlights = function(_)
         return {
@@ -156,25 +156,7 @@ return {
 
     event = "BufEnter",
 
-    dependencies = {
-      {
-        "jonahgoldwastaken/copilot-status.nvim",
-
-        dependencies = {
-          "copilot.lua",
-        },
-
-        opts = {
-          icons = {
-            idle = " ",
-            error = " ",
-            offline = " ",
-            warning = " ",
-            loading = " ",
-          },
-        },
-      },
-    },
+    dependencies = {},
 
     config = function()
       C.statusline()
@@ -248,6 +230,8 @@ return {
   },
   {
     "lewis6991/satellite.nvim",
+
+    enabled = vim.fn.has("NVIM-0.10") == 1,
 
     event = "User NormalFile",
 
@@ -337,6 +321,8 @@ return {
   {
     "lukas-reineke/indent-blankline.nvim",
 
+    main = "ibl",
+
     event = { "BufReadPre", "BufNewFile" },
 
     dependencies = {
@@ -344,13 +330,7 @@ return {
     },
 
     opts = function()
-      return require("indent-rainbowline").make_opts({
-        char = "▏",
-        context_char = "▏",
-        show_current_context = true,
-        show_current_context_start = true,
-        show_first_indent_level = false,
-      })
+      return require("indent-rainbowline").make_opts()
     end,
   },
   {
@@ -358,6 +338,25 @@ return {
 
     event = "VeryLazy",
 
-    opts = {}
+    opts = {},
+  },
+  {
+    "jonahgoldwastaken/copilot-status.nvim",
+
+    lazy = true,
+
+    dependencies = {
+      "copilot.lua",
+    },
+
+    opts = {
+      icons = {
+        idle = " ",
+        error = " ",
+        offline = " ",
+        warning = " ",
+        loading = " ",
+      },
+    },
   },
 }
