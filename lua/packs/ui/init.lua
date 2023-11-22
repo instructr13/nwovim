@@ -330,7 +330,39 @@ return {
     },
 
     opts = function()
-      return require("indent-rainbowline").make_opts()
+      local hooks = require("ibl.hooks")
+
+      hooks.register(
+        hooks.type.WHITESPACE,
+        hooks.builtin.hide_first_space_indent_level
+      )
+
+      hooks.register(
+        hooks.type.SCOPE_HIGHLIGHT,
+        hooks.builtin.scope_highlight_from_extmark
+      )
+
+      local new_opts = require("indent-rainbowline").make_opts({
+        -- Put safe config that doesn't affect highlighting here
+        indent = {
+          char = "▏",
+        },
+        whitespace = {
+          remove_blankline_trail = false,
+        },
+      })
+
+      new_opts.scope.highlight = {
+        "RainbowDelimiterRed",
+        "RainbowDelimiterYellow",
+        "RainbowDelimiterBlue",
+        "RainbowDelimiterOrange",
+        "RainbowDelimiterGreen",
+        "RainbowDelimiterViolet",
+        "RainbowDelimiterCyan",
+      }
+
+      return new_opts
     end,
   },
   {
