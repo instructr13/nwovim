@@ -173,6 +173,7 @@ function M.setup()
   vim.opt.undofile = true
 
   vim.opt.spell = true
+  vim.opt.spelllang:append("cjk")
 
   vim.opt.linespace = 5
   vim.opt.guifont = string.format("%s:h%d", "Console", 11)
