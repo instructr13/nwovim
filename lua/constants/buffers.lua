@@ -17,6 +17,9 @@ local quit_with_q = {
 }
 
 local ignore_buf_change_filetypes = vim.tbl_extend("force", quit_with_q, {
+  -- alpha-nvim
+  "alpha",
+
   -- nvim-dap
   "dbui",
 
