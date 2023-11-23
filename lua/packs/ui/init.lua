@@ -280,7 +280,7 @@ return {
           },
           {
             sign = {
-              name = { "GitSigns.*" },
+              namespace = { "gitsigns_extmark_signs_" },
             },
             click = "v:lua.ScSa",
           },
