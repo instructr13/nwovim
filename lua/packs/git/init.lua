@@ -118,10 +118,28 @@ return {
   {
     "sindrets/diffview.nvim",
 
-    lazy = true,
+    cmd = { "DiffviewOpen" },
+  },
+  {
+    "NeogitOrg/neogit",
 
-    cmd = {
-      "DiffviewOpen",
+    cmd = { "Neogit" },
+
+    init = function()
+      local keymap = require("utils.keymap").keymap
+
+      keymap("n", "<leader>gg", "<cmd>Neogit<cr>", "Open Neogit")
+    end,
+
+    opts = {
+      telescope_sorter = function()
+        return nil
+      end,
+
+      integrations = {
+        --telescope = true,
+        diffview = true,
+      },
     },
   },
 }

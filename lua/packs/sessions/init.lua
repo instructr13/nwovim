@@ -17,6 +17,12 @@ return {
     keymap("d", function()
       require("resession").delete()
     end, "Delete Session")
+
+    vim.api.nvim_create_autocmd("VimLeavePre", {
+      callback = function()
+        require("resession").save("last")
+      end,
+    })
   end,
 
   opts = {
@@ -25,5 +31,8 @@ return {
 
       return vim.startswith(vim.api.nvim_buf_get_name(bufnr), dir)
     end,
+    extensions = {
+      overseer = {},
+    },
   },
 }

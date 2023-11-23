@@ -40,6 +40,7 @@ return {
           require("illuminate").configure({
             filetypes_denylist = {
               "CodeAction",
+              "NeogitStatus",
               "dirvish",
               "fugitive",
             },

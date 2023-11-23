@@ -263,6 +263,12 @@ return {
       },
       right = {
         { ft = "spectre_panel", size = { width = 0.4 } },
+        { title = "Task Runner", ft = "OverseerList" },
+        {
+          title = "Test Summary",
+          ft = "neotest-summary",
+          size = { width = 0.35 },
+        },
       },
     },
   },

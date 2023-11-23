@@ -212,17 +212,28 @@ return {
 
     ft = { "dart" },
 
-    opts = function()
-      return {
-        debugger = {
+    init = function()
+      require("utils.telescope").register_extension("flutter")
+    end,
+
+    opts = {
+      flutter_path = vim.env.FLUTTER_ROOT
+          and Path:new(vim.env.FLUTTER_ROOT, "bin", "flutter"):absolute()
+        or nil,
+      debugger = {
+        enabled = true,
+      },
+      widget_guides = {
+        enabled = true,
+      },
+      lsp = {
+        on_attach = require("lsp.on_attach"),
+        capabilities = require("lsp.capabilities").make_capabilities(),
+        color = {
           enabled = true,
         },
-        lsp = {
-          on_attach = require("lsp.on_attach"),
-          capabilities = require("lsp.capabilities").make_capabilities(),
-        },
-      }
-    end,
+      },
+    },
   },
   -- Markdown
   {
@@ -242,5 +253,19 @@ return {
     dependencies = "nvim-treesitter/nvim-treesitter",
 
     opts = {},
+  },
+  {
+    "jmederosalvarado/roslyn.nvim",
+
+    enabled = vim.fn.has("NVIM-0.10") == 1,
+
+    ft = { "cs", "fsharp" },
+
+    opts = function()
+      return {
+        on_attach = require("lsp.on_attach"),
+        capabilities = require("lsp.capabilities").make_capabilities(),
+      }
+    end,
   },
 }

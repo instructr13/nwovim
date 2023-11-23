@@ -135,6 +135,14 @@ return {
       },
     },
 
+    init = function()
+      local keymap = require("utils.keymap").keymap
+
+      keymap("n", "<leader>H", "<cmd>Noice telescope<cr>", "Messages History")
+
+      require("utils.telescope").register_extension("noice")
+    end,
+
     opts = {
       lsp = {
         progress = {

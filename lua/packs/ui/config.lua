@@ -21,7 +21,7 @@ function M.notify()
     end,
   })
 
-  -- require("utils.telescope").register_extension("notify")
+  require("utils.telescope").register_extension("notify")
 end
 
 function M.bufferline()
@@ -79,6 +79,12 @@ function M.bufferline()
         {
           filetype = "dbui",
           text = "DBUI",
+          highlight = "Keyword",
+          text_align = "center",
+        },
+        {
+          filetype = "OverseerList",
+          text = "Task Runner",
           highlight = "Keyword",
           text_align = "center",
         },
@@ -663,7 +669,7 @@ function M.statusline()
     end,
   }
 
-  TerminalBlock = utils.insert(TerminalBlock, TerminalIcon, TerminalName)
+  TerminalBlock = utils.insert(TerminalBlock, TerminalIcon, TerminalName, Space)
   Left = utils.insert(Left, TerminalBlock)
 
   local HelpBlock = {
@@ -687,6 +693,57 @@ function M.statusline()
 
   HelpBlock = utils.insert(HelpBlock, HelpIcon, HelpFileName)
   Left = utils.insert(Left, HelpBlock)
+
+  local function rpad(child)
+    return {
+      condition = child.condition,
+      child,
+      Space,
+    }
+  end
+
+  local function OverseerTasksForStatus(status)
+    return {
+      condition = function(self)
+        return self.tasks[status]
+      end,
+      provider = function(self)
+        return string.format("%s%d", self.symbols[status], #self.tasks[status])
+      end,
+      hl = function()
+        return {
+          fg = utils.get_highlight(string.format("Overseer%s", status)).fg,
+        }
+      end,
+    }
+  end
+
+  local Overseer = {
+    condition = function()
+      return package.loaded.overseer
+    end,
+    init = function(self)
+      local tasks = require("overseer.task_list").list_tasks({ unique = true })
+      local tasks_by_status =
+        require("overseer.util").tbl_group_by(tasks, "status")
+      self.tasks = tasks_by_status
+    end,
+    static = {
+      symbols = {
+        ["CANCELED"] = " ",
+        ["FAILURE"] = "󰅚 ",
+        ["SUCCESS"] = "󰄴 ",
+        ["RUNNING"] = "󰑮 ",
+      },
+    },
+
+    rpad(OverseerTasksForStatus("CANCELED")),
+    rpad(OverseerTasksForStatus("RUNNING")),
+    rpad(OverseerTasksForStatus("SUCCESS")),
+    rpad(OverseerTasksForStatus("FAILURE")),
+  }
+
+  Left = utils.insert(Left, Overseer)
 
   statusline = utils.insert(statusline, Left, Align)
 
