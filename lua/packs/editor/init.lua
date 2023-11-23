@@ -37,7 +37,13 @@ return {
             return
           end
 
-          require("illuminate") -- Load
+          require("illuminate").configure({
+            filetypes_denylist = {
+              "CodeAction",
+              "dirvish",
+              "fugitive",
+            },
+          })
 
           vim.api.nvim_del_augroup_by_name("illuminate_init")
         end,
@@ -250,5 +256,20 @@ return {
     "ethanholz/nvim-lastplace",
 
     opts = {},
+  },
+  {
+    "0xAdk/full_visual_line.nvim",
+
+    keys = "V",
+
+    opts = {},
+  },
+  {
+    "VidocqH/auto-indent.nvim",
+
+    opts = {},
+  },
+  {
+    "chrisgrieser/nvim-puppeteer",
   },
 }

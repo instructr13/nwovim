@@ -31,12 +31,6 @@ function M.register(client, buffer, _cap)
     end, "Hover")
   end
 
-  if cap["codeActionProvider"] then
-    require("utils.keymap").keymap({ "n", "v" }, "<F4>", function()
-      vim.lsp.buf.code_action()
-    end, "Code Action")
-  end
-
   if cap["renameProvider"] then
     keymap("gr", function()
       vim.lsp.buf.rename()

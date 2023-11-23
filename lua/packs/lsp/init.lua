@@ -179,11 +179,95 @@ return {
     },
   },
   {
-    "VidocqH/lsp-lens.nvim",
+    "Wansmer/symbol-usage.nvim",
 
     event = { "LspAttach" },
 
-    opts = {},
+    opts = function()
+      local function h(name)
+        return vim.api.nvim_get_hl(0, { name = name })
+      end
+
+      vim.api.nvim_set_hl(
+        0,
+        "SymbolUsageRounding",
+        { fg = h("CursorLine").bg, italic = true }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "SymbolUsageContent",
+        { bg = h("CursorLine").bg, fg = h("Comment").fg, italic = true }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "SymbolUsageRef",
+        { fg = h("Function").fg, bg = h("CursorLine").bg, italic = true }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "SymbolUsageDef",
+        { fg = h("Type").fg, bg = h("CursorLine").bg, italic = true }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "SymbolUsageImpl",
+        { fg = h("@keyword").fg, bg = h("CursorLine").bg, italic = true }
+      )
+
+      return {
+        vt_position = "textwidth",
+        implementation = { enable = true },
+        text_format = function(symbol)
+          local result = {}
+
+          local round_start = { "", "SymbolUsageRounding" }
+          local round_end = { "", "SymbolUsageRounding" }
+
+          if symbol.references then
+            local usage = symbol.references <= 1 and "usage" or "usages"
+            local num = symbol.references == 0 and "no" or symbol.references
+
+            table.insert(result, round_start)
+            table.insert(result, { "󰌹 ", "SymbolUsageRef" })
+            table.insert(
+              result,
+              { ("%s %s"):format(num, usage), "SymbolUsageContent" }
+            )
+            table.insert(result, round_end)
+          end
+
+          if symbol.definition then
+            if #result > 0 then
+              table.insert(result, { " ", "NonText" })
+            end
+
+            table.insert(result, round_start)
+            table.insert(result, { "󰳽 ", "SymbolUsageDef" })
+            table.insert(
+              result,
+              { symbol.definition .. " defs", "SymbolUsageContent" }
+            )
+            table.insert(result, round_end)
+          end
+
+          if symbol.implementation then
+            if #result > 0 then
+              table.insert(result, { " ", "NonText" })
+            end
+
+            table.insert(result, round_start)
+            table.insert(result, { "󰡱 ", "SymbolUsageImpl" })
+            table.insert(
+              result,
+              { symbol.implementation .. " impls", "SymbolUsageContent" }
+            )
+            table.insert(result, round_end)
+          end
+
+          return result
+        end,
+      }
+    end,
   },
   {
     "stevearc/conform.nvim",
@@ -442,5 +526,31 @@ return {
     lazy = true,
 
     opts = {},
+  },
+  {
+    "hinell/lsp-timeout.nvim",
+
+    event = { "LspAttach" },
+
+    init = function()
+      vim.g.lspTimeoutConfig = {
+        stopTimeout = 1000 * 60 * 10,
+        startTimeout = 0,
+      }
+    end,
+  },
+  {
+    "luckasRanarison/clear-action.nvim",
+
+    event = { "LspAttach" },
+
+    opts = {
+      signs = {
+        enable = false,
+      },
+      mappings = {
+        code_action = "<F4>",
+      },
+    },
   },
 }
