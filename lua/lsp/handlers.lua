@@ -3,9 +3,18 @@ local M = {}
 local function common(server_name, opts)
   opts = opts or {}
 
+  local on_attach_fn
+
+  if opts.on_attach then
+    on_attach_fn = opts.on_attach
+    opts.on_attach = nil
+  else
+    on_attach_fn = require("lsp.on_attach")
+  end
+
   require("lspconfig")[server_name].setup(vim.tbl_deep_extend("error", {
     capabilities = require("lsp.capabilities").make_capabilities(),
-    on_attach = require("lsp.on_attach"),
+    on_attach = on_attach_fn,
   }, opts))
 end
 
@@ -56,12 +65,28 @@ function M.yamlls()
   })
 end
 
+function M.tsserver()
+  common("tsserver", {
+    autostart = false,
+    root_dir = require("lspconfig.util").root_pattern({
+      "package.json",
+      "tsconfig.json",
+      "jsconfig.json",
+    }),
+    on_attach = require("lsp.on_attach"),
+  })
+end
+
+-- Disable automatic Deno setup by mason-lspconfig, we'll do it manually with
+-- opts field of deno-nvim
+function M.denols() end
+
 -- Disable automatic jdtls setup by mason-lspconfig, we'll do it manually with
 -- init function of nvim-jdtls
 function M.jdtls() end
 
--- Disable automatic jdtls setup by mason-lspconfig, we'll do it manually with
--- opts field of rust-tools.nvim
+-- Disable automatic rust-analyzer setup by mason-lspconfig, we'll do it
+-- manually with opts field of rust-tools.nvim
 function M.rust_analyzer() end
 
 return M

@@ -26,4 +26,15 @@ function M.find_client(name)
   end
 end
 
+-- Disable notification of client detach
+function M.detach_silently(bufnr, id)
+  local original_notify = vim.notify
+
+  vim.notify = function(...) end
+
+  vim.lsp.buf_detach_client(bufnr, id)
+
+  vim.notify = original_notify
+end
+
 return M

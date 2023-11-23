@@ -25,15 +25,15 @@ local prepare_needed_dirs = function()
         }
       )
     elseif
-        err == nil
-        and needed_dir_stat ~= nil
-        and needed_dir_stat.type ~= "directory"
+      err == nil
+      and needed_dir_stat ~= nil
+      and needed_dir_stat.type ~= "directory"
     then
       vim.notify(
         "Error while preparing "
-        .. needed_dir
-        .. ": This is a "
-        .. needed_dir_stat.type,
+          .. needed_dir
+          .. ": This is a "
+          .. needed_dir_stat.type,
         log_levels.ERROR,
         {
           title = "core",

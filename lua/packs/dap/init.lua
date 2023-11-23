@@ -1,3 +1,5 @@
+local Path = require("plenary.path")
+
 local C = require("packs.dap.config")
 
 return {
@@ -44,6 +46,15 @@ return {
               return {
                 handlers = {
                   function(config)
+                    require("mason-nvim-dap").default_setup(config)
+                  end,
+                  python = function(config)
+                    config.adapters = {
+                      type = "executable",
+                      command = "python",
+                      args = { "-m", "debugpy.adapter" },
+                    }
+
                     require("mason-nvim-dap").default_setup(config)
                   end,
                 },
