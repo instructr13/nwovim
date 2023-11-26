@@ -136,6 +136,8 @@ return {
           local builtins = require("null-ls").builtins
 
           return {
+            border = "rounded",
+            update_in_insert = false,
             sources = {
               builtins.code_actions.gitsigns,
               builtins.code_actions.gitrebase,
@@ -495,17 +497,14 @@ return {
   {
     "j-hui/fidget.nvim",
 
-    tag = "legacy",
-
     event = { "LspAttach" },
 
     dependencies = { "nvim-tree/nvim-web-devicons" },
 
     opts = {
-      sources = {
-        ["null-ls"] = {
-          ignore = true,
-        },
+      progress = {
+        ignore_done_already = true,
+        ignore = { "null-ls" },
       },
     },
   },

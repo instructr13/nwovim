@@ -10,9 +10,11 @@ return {
       {
         "nvim-neo-tree/neo-tree.nvim",
 
-        lazy = true,
-
         cmd = "Neotree",
+
+        keys = {
+          { "\\", "<cmd>Neotree toggle<cr>", desc = "Toggle Neo-tree" },
+        },
 
         dependencies = {
           "nvim-lua/plenary.nvim",
@@ -20,11 +22,7 @@ return {
           "MunifTanjim/nui.nvim",
         },
 
-        branch = "v2.x",
-
-        keys = {
-          { "\\", "<cmd>Neotree toggle<cr>", desc = "Toggle Neo-tree" },
-        },
+        version = "*",
 
         init = function()
           vim.g.neo_tree_remove_legacy_commands = 1
@@ -64,6 +62,12 @@ return {
           auto_clean_after_session_restore = true,
           hide_root_node = true,
           use_popups_for_input = false,
+          open_files_do_not_replace_types = {
+            "terminal",
+            "Trouble",
+            "qf",
+            "edgy",
+          },
 
           source_selector = {
             winbar = false,
@@ -116,6 +120,7 @@ return {
             },
             group_empty_dirs = true,
             use_libuv_file_watcher = true,
+            hijack_netrw_behavior = "open_current",
             window = {
               mappings = {
                 ["<tab>"] = function(state)

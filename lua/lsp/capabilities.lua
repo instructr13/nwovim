@@ -196,7 +196,7 @@ function M.register(client, buffer, _cap)
   end
 
   if cap["inlayHintProvider"] and vim.lsp.inlay_hint ~= nil then
-    vim.lsp.inlay_hint(buffer, true)
+    vim.lsp.inlay_hint.enable(buffer, true)
   end
 end
 
@@ -290,7 +290,7 @@ function M.unregister(buffer, cap)
   end
 
   if cap["inlayHintProvider"] and vim.lsp.inlay_hint ~= nil then
-    vim.lsp.inlay_hint(buffer, false)
+    vim.lsp.inlay_hint.enable(buffer, false)
   end
 end
 
