@@ -1,3 +1,5 @@
+local keymap = require("utils.keymap").keymap
+
 return {
   {
     "nvim-telescope/telescope.nvim",
@@ -54,11 +56,6 @@ return {
             },
           },
         },
-        pickers = {
-          find_files = {
-            theme = "dropdown",
-          },
-        },
         extensions = {
           -- Sorter
           fzf = {
@@ -91,5 +88,57 @@ return {
     lazy = true,
 
     build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+  },
+  {
+    "nvim-pack/nvim-spectre",
+
+    lazy = true,
+
+    init = function()
+      local keymap = require("utils.keymap").omit("append", "n", "<leader>")
+
+      keymap("S", function()
+        require("spectre").open()
+      end, "Open Spectre")
+
+      keymap("sw", function()
+        require("spectre").open_visual({ select_word = true })
+      end, "Search current word")
+
+      require("utils.keymap").keymap("v", "<leader>sw", function()
+        require("spectre").open_visual()
+      end, "Search selected word")
+
+      keymap("sp", function()
+        require("spectre").open_file_search({ select_word = true })
+      end, "Search on current file")
+    end,
+  },
+  {
+    "cshuaimin/ssr.nvim",
+
+    lazy = true,
+
+    init = function()
+      keymap("n", "<leader>sr", function()
+        require("ssr").open()
+      end, "Structual search")
+    end,
+
+    opts = {
+      border = "rounded",
+      min_width = 50,
+      min_height = 5,
+      max_width = 120,
+      max_height = 25,
+      adjust_window = true,
+      keymaps = {
+        close = "q",
+        next_match = "n",
+        prev_match = "N",
+        replace_confirm = "<cr>",
+        replace_all = "<leader><cr>",
+      },
+    },
   },
 }

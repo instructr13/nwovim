@@ -53,6 +53,7 @@ end
 
 function M.setup()
   require("editor.keymap.before")
+  require("editor.commands.before")
   require("editor.events.before")
 
   local pack = require("core.pack")
@@ -67,6 +68,12 @@ function M.setup()
   pack.setup()
 
   require("colorschemes").setup()
+
+  if vim.g.vscode then
+    require("editor.keymap.vscode")
+  else
+    require("editor.events.neovim")
+  end
 
   vim.api.nvim_create_autocmd("User", {
     pattern = "VeryLazy",

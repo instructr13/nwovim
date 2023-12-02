@@ -4,6 +4,17 @@ local utils = require("utils.lsp")
 
 local M = {}
 
+function M.is_deno_fmt_available()
+  local vscode_config = require("neoconf").get().vscode
+
+  if
+    vscode_config.editor
+    and vscode_config.editor.defaultFormatter == "denoland.vscode-deno"
+  then
+    return true
+  end
+end
+
 function M.is_deno_available(bufnr)
   bufnr = bufnr or 0
   local buffer_file = Path:new(vim.uri_to_fname(vim.uri_from_bufnr(bufnr)))

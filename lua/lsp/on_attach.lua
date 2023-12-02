@@ -3,8 +3,8 @@ local utils = require("utils.lsp")
 ---@param client lsp.Client
 ---@param buffer number
 return function(client, buffer)
-  local keymap =
-      require("utils.keymap").omit("append", "n", "", { buffer = buffer })
+  local leader =
+    require("utils.keymap.presets").leader("n", "", { buffer = buffer })
 
   local command = require("utils.command").current_buf_command
 
@@ -34,15 +34,15 @@ return function(client, buffer)
     }
   )
 
-  keymap("<leader>lwf", function()
+  leader("lwf", function()
     utils.list_workspace_folders()
   end, "Workspace Folders")
 
-  keymap("<leader>lwa", function()
+  leader("lwa", function()
     vim.lsp.buf.add_workspace_folder()
   end, "Add Workspace Folder")
 
-  keymap("<leader>lwr", function()
+  leader("lwr", function()
     vim.lsp.buf.remove_workspace_folder()
   end, "Remove Workspace Folder")
 

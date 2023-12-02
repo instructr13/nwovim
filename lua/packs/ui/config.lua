@@ -175,7 +175,9 @@ function M.statusline()
     end,
 
     provider = function(self)
-      return " " .. self.icon and (self.icon .. " ")
+      local right_separator = self.filetype ~= "" and " " or ""
+
+      return " " .. self.icon and (self.icon .. right_separator)
     end,
 
     hl = function(self)

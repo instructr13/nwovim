@@ -2,22 +2,37 @@
 
 local exec = require("editor.events").exec
 local autocmd = vim.api.nvim_create_autocmd
-local augroup = vim.api.nvim_create_augroup
+
+local augroup = function(name, opts)
+  opts = opts or {}
+
+  return vim.api.nvim_create_augroup(name, opts)
+end
+
+autocmd({ "BufWritePre" }, {
+  group = augroup("auto_create_dir"),
+  callback = function(event)
+    if event.match:match("^%w%w+://") then
+      return
+    end
+
+    local file = vim.loop.fs_realpath(event.match) or event.match
+
+    vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+  end,
+})
 
 autocmd("TextYankPost", {
-  group = augroup("highlight_yank", {}),
+  group = augroup("highlight_yank"),
   pattern = "*",
   callback = function()
-    vim.highlight.on_yank({
-      higroup = "IncSearch",
-      timeout = 400,
-    })
+    vim.highlight.on_yank({ timeout = 400 })
   end,
   desc = "Highlight yanked text",
 })
 
 autocmd("TermOpen", {
-  group = augroup("terminal_opt", {}),
+  group = augroup("terminal_opt"),
   pattern = "term://*",
   callback = function()
     vim.opt_local.number = false
@@ -30,7 +45,7 @@ autocmd("TermOpen", {
 })
 
 autocmd({ "BufEnter", "WinEnter", "BufWinEnter" }, {
-  group = augroup("nofile_settings", {}),
+  group = augroup("nofile_settings"),
   pattern = "*",
   callback = function()
     if vim.bo.buftype == "nofile" or vim.bo.buftype == "quickfix" then
@@ -77,8 +92,8 @@ autocmd("BufWinEnter", {
 })
 
 autocmd("FileType", {
-  desc = "Unlist quickfist buffers",
-  group = augroup("unlist_quickfist", { clear = true }),
+  desc = "Unlist quicklist buffers",
+  group = augroup("unlist_quicklist", { clear = true }),
   pattern = "qf",
   callback = function()
     vim.opt_local.buflisted = false

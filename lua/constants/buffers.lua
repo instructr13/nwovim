@@ -5,14 +5,23 @@ local quit_with_q = {
     "quickfix",
   },
   filetypes = {
+    -- Code from LazyVim
+    "PlenaryTestPopup",
+    "help",
+    "lspinfo",
+    "man",
+    "notify",
+    "query",
+    "spectre_panel",
+    "startuptime",
+    "tsplayground",
+    "neotest-output",
+    "checkhealth",
+    "neotest-summary",
+    "neotest-output-panel",
+
     -- vim-dadbod
     "dbout",
-
-    -- lsp
-    "lspinfo",
-
-    -- nvim-treesitter/playground
-    "tsplayground",
   },
 }
 

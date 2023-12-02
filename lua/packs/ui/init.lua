@@ -53,21 +53,23 @@ return {
         }
       end,
       integrations = {
+        barbecue = {
+          dim_dirname = true,
+          bold_basename = false,
+          dim_context = false,
+        },
+        dropbar = {
+          enabled = true,
+        },
+        fidget = true,
         gitsigns = true,
+        headlines = true,
         markdown = true,
         mason = true,
         neotree = true,
         neotest = true,
         noice = true,
-        headlines = true,
-        cmp = true,
-        fidget = true,
-        dap = {
-          enabled = true,
-          enable_ui = true,
-        },
         native_lsp = {
-          enabled = true,
           underlines = {
             errors = { "undercurl" },
             warnings = { "undercurl" },
@@ -75,42 +77,40 @@ return {
             hints = { "underdotted" },
           },
         },
-        dropbar = {
-          enabled = true,
-        },
-        barbecue = {
-          dim_dirname = true,
-          bold_basename = false,
-          dim_context = false,
-        },
         navic = {
           enabled = true,
-          custom_bg = "NONE",
         },
         notify = true,
         treesitter_context = true,
-        treesitter = true,
-        ts_rainbow2 = true,
-        telescope = true,
-        illuminate = true,
-        indent_blankline = {
+        window_picker = true,
+        octo = true,
+        telescope = {
           enabled = true,
-          colored_indent_levels = true,
+          style = "nvchad",
         },
+        which_key = true,
       },
     },
   },
   {
     "stevearc/dressing.nvim",
 
-    event = "VeryLazy",
+    lazy = true,
+
+    init = function()
+      vim.ui.select = function(...)
+        require("lazy").load({ plugins = { "dressing.nvim" } })
+
+        return vim.ui.select(...)
+      end
+      vim.ui.input = function(...)
+        require("lazy").load({ plugins = { "dressing.nvim" } })
+
+        return vim.ui.input(...)
+      end
+    end,
 
     opts = {
-      input = {
-        enabled = true,
-
-        border = "rounded",
-      },
       select = {
         enabled = true,
 
@@ -120,10 +120,17 @@ return {
           },
         },
       },
+      input = {
+        enabled = true,
+
+        border = "rounded",
+      },
     },
   },
   {
     "folke/noice.nvim",
+
+    event = { "VeryLazy" },
 
     dependencies = {
       "MunifTanjim/nui.nvim",
@@ -146,6 +153,9 @@ return {
 
     opts = {
       lsp = {
+        override = {
+          ["cmp.entry.get_documetation"] = true,
+        },
         progress = {
           enabled = false,
         },
@@ -175,7 +185,7 @@ return {
     -- Bufferline
     "akinsho/bufferline.nvim",
 
-    version = "*",
+    --version = "*",
 
     event = "BufEnter",
 
@@ -351,7 +361,7 @@ return {
             local name = vim.api.nvim_buf_get_name(buf)
 
             local term =
-              select(2, require("toggleterm.terminal").indentify(name))
+              select(2, require("toggleterm.terminal").identify(name))
 
             if term then
               return term.display_name or term.name
@@ -482,15 +492,6 @@ return {
     end,
   },
   {
-    "mawkler/modicator.nvim",
-
-    event = "ModeChanged",
-
-    opts = {
-      show_warnings = false,
-    },
-  },
-  {
     "lukas-reineke/indent-blankline.nvim",
 
     main = "ibl",
@@ -503,11 +504,6 @@ return {
 
     opts = function()
       local hooks = require("ibl.hooks")
-
-      hooks.register(
-        hooks.type.WHITESPACE,
-        hooks.builtin.hide_first_space_indent_level
-      )
 
       hooks.register(
         hooks.type.SCOPE_HIGHLIGHT,
@@ -542,7 +538,33 @@ return {
 
     event = "VeryLazy",
 
-    opts = {},
+    opts = {
+      defaults = {
+        mode = { "n", "v" },
+        ["g"] = { name = "+goto" },
+        ["gs"] = { name = "+surround" },
+        ["]"] = { name = "+next" },
+        ["["] = { name = "+prev" },
+        ["<leader><tab>"] = { name = "+tabs" },
+        ["<leader>c"] = { name = "+code" },
+        ["<leader>d"] = { name = "+debug" },
+        ["<leader>f"] = { name = "+file/find" },
+        ["<leader>g"] = { name = "+git" },
+        ["<leader>l"] = { name = "+lsp" },
+        ["<leader>s"] = { name = "+search/session" },
+        ["<leader>t"] = { name = "+tasks" },
+        ["<leader>u"] = { name = "+ui" },
+        ["<leader>w"] = { name = "+windows" },
+        ["<leader>x"] = { name = "+diagnostics/quickfix" },
+      },
+    },
+
+    config = function(_, opts)
+      local wk = require("which-key")
+
+      wk.setup(opts)
+      wk.register(opts.defaults)
+    end,
   },
   {
     "jonahgoldwastaken/copilot-status.nvim",

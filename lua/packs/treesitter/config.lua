@@ -1,20 +1,9 @@
 local M = {}
 
+local keymap = require("utils.keymap").keymap
+
 function M.treesitter()
   local augroup = vim.api.nvim_create_augroup("treesitter-fold", {})
-
-  vim.api.nvim_create_autocmd(
-    { "BufEnter", "BufAdd", "BufNew", "BufNewFile", "BufWinEnter" },
-    {
-      group = augroup,
-      callback = function()
-        vim.opt.foldmethod = "expr"
-        vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-      end,
-    }
-  )
-
-  require("nvim-dap-repl-highlights") -- Load nvim-dap-repl-highlights
 
   require("nvim-treesitter.configs").setup({
     ensure_installed = {
@@ -39,19 +28,14 @@ function M.treesitter()
     },
     auto_install = true,
     highlight = {
-      enable = true,
+      enable = not vim.g.vscode,
       additional_vim_regex_highlighting = false,
     },
     playground = {
-      enable = true
-    },
-    rainbow = {
-      enable = true,
-      extended_mode = true,
-      max_file_lines = 2000,
+      enable = not vim.g.vscode,
     },
     indent = { enable = false },
-    yati = { enable = true },
+    yati = { enable = not vim.g.vscode },
     endwise = {
       enable = true,
     },
@@ -62,7 +46,7 @@ function M.treesitter()
       enable = true,
     },
     context_commentstring = {
-      enable = true,
+      enable = not vim.g.vscode,
     },
     --[[
     textsubjects = {
@@ -74,6 +58,31 @@ function M.treesitter()
     },
     ]]
   })
+
+  if vim.g.vscode then
+    return
+  end
+
+  vim.api.nvim_create_autocmd(
+    { "BufEnter", "BufAdd", "BufNew", "BufNewFile", "BufWinEnter" },
+    {
+      group = augroup,
+      callback = function()
+        vim.opt.foldmethod = "expr"
+        vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+      end,
+    }
+  )
+
+  require("nvim-dap-repl-highlights") -- Load nvim-dap-repl-highlights
+
+  keymap("n", "<leader>uT", function()
+    if vim.b.ts_highlight then
+      vim.treesitter.stop()
+    else
+      vim.treesitter.start()
+    end
+  end, "Toggle Treesitter Highlight")
 
   require("nvim-treesitter.install").prefer_git = true
 end
@@ -94,8 +103,6 @@ function M.syntax_tree_surfer()
       "switch_statement",
     },
   })
-
-  local keymap = require("utils.keymap").keymap
 
   local keymap_swap = require("utils.keymap").omit(
     "append",
@@ -130,8 +137,6 @@ function M.syntax_tree_surfer()
 end
 
 function M.syntax_tree_surfer_setup()
-  local keymap = require("utils.keymap").keymap
-
   keymap("n", "vx", function()
     require("syntax-tree-surfer").select()
   end)

@@ -4,8 +4,6 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
 
-    version = false,
-
     build = ":TSUpdate",
 
     event = { "User NormalFile", "CmdlineChanged" },
@@ -27,7 +25,7 @@ return {
       "windwp/nvim-ts-autotag",
       "RRethy/nvim-treesitter-endwise",
       "nvim-treesitter/playground",
-      { "yioneko/nvim-yati", version = false },
+      "yioneko/nvim-yati",
     },
 
     config = function()

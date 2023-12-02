@@ -1,11 +1,13 @@
 local M = {}
 
-local DEFAULT_COLOR_SCHEME = "catppuccin"
-
--- TODO: make colorschemes selectable
+M.default_colorscheme = "catppuccin"
 
 function M.setup()
-  pcall(require(string.format("colorschemes.%s", DEFAULT_COLOR_SCHEME)))
+  if vim.g.vscode then
+    return
+  end
+
+  pcall(require(string.format("colorschemes.%s", M.default_colorscheme)))
 end
 
 return M

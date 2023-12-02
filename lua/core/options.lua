@@ -15,16 +15,15 @@ function M.setup()
 
   -- Make the settings do not override editorconfig
   vim.opt.expandtab = true
-  vim.opt.shiftround = true
-  vim.opt.shiftwidth = 2
   vim.opt.tabstop = 2
+  vim.opt.shiftwidth = 0
+  vim.opt.shiftround = true
   vim.opt.softtabstop = -1
 
   vim.opt.foldlevel = 9999
 
   vim.opt.mouse = "a"
   vim.opt.mousemoveevent = true
-  vim.opt.clipboard = { "unnamedplus" }
 
   vim.opt.updatetime = 100
   vim.opt.redrawtime = 1500
@@ -86,6 +85,7 @@ function M.setup()
   vim.opt.pumheight = 10
   vim.opt.winfixheight = true
   vim.opt.winfixwidth = true
+  vim.opt.winminwidth = 5
   vim.opt.winaltkeys = "no"
 
   vim.opt.scrolloff = 4
@@ -95,7 +95,7 @@ function M.setup()
 
   vim.opt.cursorline = true
   vim.opt.concealcursor = "nc"
-  vim.opt.virtualedit = "onemore"
+  vim.opt.virtualedit = "block"
 
   vim.opt.formatoptions:remove("cro")
   vim.opt.formatoptions:append("1Mjlmnq")
@@ -123,6 +123,7 @@ function M.setup()
     foldopen = "",
     foldsep = " ",
     foldclose = "",
+    diff = "╱",
   }
 
   vim.opt.list = false
@@ -146,6 +147,7 @@ function M.setup()
   -- backup is executed by other plugin
   vim.opt.backup = false
   vim.opt.writebackup = false
+  vim.opt.confirm = true
 
   vim.opt.autowrite = true
   vim.opt.writeany = true
@@ -172,15 +174,28 @@ function M.setup()
   vim.opt.undodir = join_paths(data_dir, "undos")
   vim.opt.undofile = true
 
-  vim.opt.spell = true
   vim.opt.spelllang:append("cjk")
 
-  vim.opt.linespace = 5
-  vim.opt.guifont = string.format("%s:h%d", "Console", 11)
+  vim.opt.linespace = 8
+  vim.opt.guifont =
+    "CommitMono,UDEV Gothic NFLG:h10:#e-subpixelantialias:#h-none"
 
   vim.opt.splitkeep = "screen"
 
   vim.opt.swapfile = false
+
+  if vim.fn.has("NVIM-0.10") == 1 then
+    vim.opt.smoothscroll = true
+  end
+
+  if vim.g.neovide then
+    vim.opt.winblend = 24
+    vim.g.neovide_hide_mouse_when_typing = true
+    vim.g.neovide_remember_window_size = true
+    vim.g.neovide_input_macos_alt_is_meta = false
+    vim.g.neovide_input_ime = false
+    vim.g.neovide_scroll_animation_length = 0
+  end
 end
 
 return M

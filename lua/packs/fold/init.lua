@@ -1,5 +1,3 @@
-local C = require("packs.fold.config")
-
 return {
   {
     "kevinhwang91/nvim-ufo",
@@ -52,7 +50,7 @@ return {
 
             if cursor_width + chunk_width < target_width then
               suffix = suffix
-                  .. (" "):rep(target_width - cursor_width - chunk_width)
+                .. (" "):rep(target_width - cursor_width - chunk_width)
             end
 
             break
@@ -69,16 +67,5 @@ return {
         return new_virtual_text
       end,
     },
-  },
-  {
-    "jghauser/fold-cycle.nvim",
-
-    lazy = true,
-
-    init = function()
-      C.fold_cycle()
-    end,
-
-    opts = {},
   },
 }

@@ -177,29 +177,6 @@ return {
           },
         },
       },
-      {
-        "nvim-pack/nvim-spectre",
-
-        init = function()
-          local keymap = require("utils.keymap").omit("append", "n", "<leader>")
-
-          keymap("S", function()
-            require("spectre").open()
-          end, "Open Spectre")
-
-          keymap("sw", function()
-            require("spectre").open_visual({ select_word = true })
-          end, "Search current word")
-
-          require("utils.keymap").keymap("v", "<leader>sw", function()
-            require("spectre").open_visual()
-          end, "Search selected word")
-
-          keymap("sp", function()
-            require("spectre").open_file_search({ select_word = true })
-          end, "Search on current file")
-        end,
-      },
     },
 
     opts = {

@@ -6,6 +6,8 @@ return {
   {
     "L3MON4D3/LuaSnip",
 
+    version = "*",
+
     lazy = true,
 
     run = not is_windows and "make install_jsregexp" or "",

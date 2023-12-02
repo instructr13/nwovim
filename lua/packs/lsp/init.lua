@@ -1,5 +1,6 @@
 local data_dir = require("constants.paths").data_dir
 local join_paths = require("utils.paths").join_paths
+local keymap = require("utils.keymap").keymap
 
 return {
   {
@@ -69,6 +70,10 @@ return {
         "neovim/nvim-lspconfig",
 
         config = function()
+          keymap("n", "<leader>lI", function()
+            vim.cmd("LspInfo")
+          end, "LSP Information", { silent = true })
+
           require("lspconfig.ui.windows").default_options.border = "rounded"
         end,
       },
@@ -290,6 +295,8 @@ return {
     },
 
     init = function()
+      local keymap = require("utils.keymap.presets").leader("n", "")
+
       vim.opt.formatexpr = "v:lua.require('conform').formatexpr()"
 
       vim.api.nvim_create_user_command("Format", function(args)
@@ -310,6 +317,12 @@ return {
           range = range,
         })
       end, { range = true })
+
+      keymap("cf", "<cmd>Format<cr>", "Format")
+
+      keymap("cF", function()
+        require("conform").format({ formatters = { "injected" } })
+      end, "Format injected languages")
 
       vim.api.nvim_create_user_command("FormatDisable", function(args)
         if args.bang then
@@ -340,6 +353,9 @@ return {
         desc = "Toggle autoformat-on-save",
         bang = true,
       })
+
+      keymap("uf", "<cmd>FormatToggle<cr>", "Toggle auto format (global)")
+      keymap("uf", "<cmd>FormatToggle!<cr>", "Toggle auto format (buffer)")
     end,
 
     opts = function()
@@ -361,8 +377,14 @@ return {
       end
 
       local other_deno_formatters = function(bufnr)
-        return vim.b[bufnr].lsp_enable_deno and { "deno_fmt" }
-          or { { "prettierd", "prettier" } }
+        if
+          vim.b[bufnr].lsp_enable_deno
+          or require("lsp.special.denols").is_deno_fmt_available()
+        then
+          return { "deno_fmt" }
+        end
+
+        return { { "prettierd", "prettier" } }
       end
 
       local js_formatters = function(bufnr)

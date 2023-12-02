@@ -22,16 +22,16 @@ return {
 
       local keymap = require("utils.keymap").omit("insert", "n", "<^%>")
 
-      keymap("A-h", function()
+      keymap("C-Left", function()
         require("smart-splits").resize_left()
       end)
-      keymap("A-j", function()
+      keymap("C-Down", function()
         require("smart-splits").resize_down()
       end)
-      keymap("A-k", function()
+      keymap("C-Up", function()
         require("smart-splits").resize_up()
       end)
-      keymap("A-l", function()
+      keymap("C-Right", function()
         require("smart-splits").resize_right()
       end)
 

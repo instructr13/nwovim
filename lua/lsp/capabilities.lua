@@ -197,6 +197,12 @@ function M.register(client, buffer, _cap)
 
   if cap["inlayHintProvider"] and vim.lsp.inlay_hint ~= nil then
     vim.lsp.inlay_hint.enable(buffer, true)
+
+    keymap("<leader>uh", function()
+      local value = not vim.lsp.inlay_hint.is_enabled(buffer)
+
+      vim.lsp.inlay_hint.enable(buffer, value)
+    end, "Toggle inlay hints")
   end
 end
 
