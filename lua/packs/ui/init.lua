@@ -61,6 +61,9 @@ return {
         dropbar = {
           enabled = true,
         },
+        indent_blankline = {
+          colored_indent_levels = true,
+        },
         fidget = true,
         gitsigns = true,
         headlines = true,
@@ -510,27 +513,26 @@ return {
         hooks.builtin.scope_highlight_from_extmark
       )
 
-      local new_opts = require("indent-rainbowline").make_opts({
+      return {
         -- Put safe config that doesn't affect highlighting here
         indent = {
           char = "▏",
         },
+        scope = {
+          highlight = {
+            "RainbowDelimiterRed",
+            "RainbowDelimiterYellow",
+            "RainbowDelimiterBlue",
+            "RainbowDelimiterOrange",
+            "RainbowDelimiterGreen",
+            "RainbowDelimiterViolet",
+            "RainbowDelimiterCyan",
+          },
+        },
         whitespace = {
           remove_blankline_trail = false,
         },
-      })
-
-      new_opts.scope.highlight = {
-        "RainbowDelimiterRed",
-        "RainbowDelimiterYellow",
-        "RainbowDelimiterBlue",
-        "RainbowDelimiterOrange",
-        "RainbowDelimiterGreen",
-        "RainbowDelimiterViolet",
-        "RainbowDelimiterCyan",
       }
-
-      return new_opts
     end,
   },
   {
