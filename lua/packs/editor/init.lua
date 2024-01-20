@@ -43,6 +43,7 @@ return {
               "NeogitStatus",
               "dirvish",
               "fugitive",
+              "neo-tree",
             },
           })
 
@@ -308,5 +309,14 @@ return {
         },
       }
     end,
+  },
+  {
+    "willothy/savior.nvim",
+
+    event = { "InsertEnter", "TextChanged" },
+
+    dependencies = { "j-hui/fidget.nvim" },
+
+    opts = {},
   },
 }

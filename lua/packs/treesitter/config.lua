@@ -59,6 +59,16 @@ function M.treesitter()
     ]]
   })
 
+  require("nvim-treesitter.parsers").get_parser_configs().typst = {
+    install_info = {
+      url = "https://github.com/uben0/tree-sitter-typst",
+      files = { "src/parser.c", "src/scanner.c" },
+      generate_requires_npm = true,
+    },
+    filetype = "typst",
+    maintainers = { "@uben0" },
+  }
+
   if vim.g.vscode then
     return
   end

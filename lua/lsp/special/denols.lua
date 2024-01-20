@@ -18,6 +18,7 @@ end
 function M.is_deno_available(bufnr)
   bufnr = bufnr or 0
   local buffer_file = Path:new(vim.uri_to_fname(vim.uri_from_bufnr(bufnr)))
+    :absolute()
   local vscode_config = require("neoconf").get().vscode
 
   if vscode_config then
@@ -31,8 +32,9 @@ function M.is_deno_available(bufnr)
       return deno_enabled_globally
     end
 
-    local workspace_root =
-      Path:new(require("neoconf.workspace").find_root({ buffer = bufnr }))
+    local workspace_root = Path:new(
+      require("neoconf.workspace").find_root({ buffer = bufnr })
+    ):absolute()
 
     if not workspace_root then
       return deno_enabled_globally
@@ -86,8 +88,6 @@ end
 
 function M.refresh(bufnr)
   vim.b[bufnr].lsp_enable_deno = M.is_deno_available(bufnr)
-
-  M.detach_tsserver_if_enabled(bufnr)
 end
 
 return M

@@ -4,8 +4,6 @@ local data_dir = require("constants.paths").data_dir
 local join_paths = require("utils.paths").join_paths
 
 function M.setup()
-  vim.opt.termguicolors = true
-
   vim.opt.number = true
   vim.opt.foldcolumn = "1"
   vim.opt.signcolumn = "auto:2-3"
@@ -88,7 +86,6 @@ function M.setup()
   vim.opt.winminwidth = 5
   vim.opt.winaltkeys = "no"
 
-  vim.opt.scrolloff = 4
   vim.opt.sidescrolloff = 16
 
   vim.opt.showtabline = 2
@@ -176,6 +173,8 @@ function M.setup()
 
   vim.opt.spelllang:append("cjk")
 
+  vim.opt.conceallevel = 2
+
   vim.opt.linespace = 8
   vim.opt.guifont =
     "CommitMono,UDEV Gothic NFLG:h10:#e-subpixelantialias:#h-none"
@@ -189,12 +188,38 @@ function M.setup()
   end
 
   if vim.g.neovide then
+    local function neovide_rpc(method, ...)
+      return vim.rpcrequest(vim.g.neovide_channel_id, method, ...)
+    end
+
     vim.opt.winblend = 24
     vim.g.neovide_hide_mouse_when_typing = true
     vim.g.neovide_remember_window_size = true
     vim.g.neovide_input_macos_alt_is_meta = false
     vim.g.neovide_input_ime = false
-    vim.g.neovide_scroll_animation_length = 0
+    vim.g.neovide_unlink_border_highlights = true
+    vim.g.neovide_cursor_animate_in_insert_mode = false
+
+    local function neovide_copy(lines)
+      return neovide_rpc("neovide.set_clipboard", lines)
+    end
+
+    local function neovide_paste()
+      return neovide_rpc("neovide.get_clipboard")
+    end
+
+    vim.g.clipboard = {
+      name = "neovide",
+      copy = {
+        ["+"] = neovide_copy,
+        ["*"] = neovide_copy,
+      },
+      paste = {
+        ["+"] = neovide_paste,
+        ["*"] = neovide_paste,
+      },
+      cache_enabled = 0,
+    }
   end
 end
 

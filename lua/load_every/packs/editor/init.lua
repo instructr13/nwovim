@@ -28,4 +28,19 @@ return {
 
     opts = {},
   },
+  {
+    "nkakouros-original/scrollofffraction.nvim",
+
+    opts = {
+      scrolloff_fraction = 0.3,
+      scrolloff_absolute_value = 4,
+    },
+  },
+  {
+    "HakonHarnes/img-clip.nvim",
+
+    event = "BufEnter",
+
+    opts = {},
+  },
 }

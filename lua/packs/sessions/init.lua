@@ -1,6 +1,8 @@
 return {
   "stevearc/resession.nvim",
 
+  version = "*",
+
   lazy = true,
 
   init = function()

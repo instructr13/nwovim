@@ -77,6 +77,25 @@ function M.tsserver()
   })
 end
 
+function M.emmet_language_server()
+  common("emmet_language_server", {
+    filetypes = {
+      "css",
+      "eruby",
+      "html",
+      "javascript",
+      "javascriptreact",
+      "less",
+      "sass",
+      "scss",
+      "pug",
+      "typescriptreact",
+      "vue",
+      "astro",
+    },
+  })
+end
+
 -- Disable automatic Deno setup by mason-lspconfig, we'll do it manually with
 -- opts field of deno-nvim
 function M.denols() end

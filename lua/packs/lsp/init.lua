@@ -279,6 +279,8 @@ return {
   {
     "stevearc/conform.nvim",
 
+    version = "*",
+
     event = { "BufWritePre" },
 
     cmd = { "ConformInfo" },
@@ -362,7 +364,7 @@ return {
       local conform = require("conform")
       local root_file = require("conform.util").root_file
 
-      require("conform.formatters").eslint_d.condition = function(ctx)
+      require("conform.formatters").eslint_d.condition = function(self, ctx)
         return require("lsp.special.eslint_d").has_config(ctx.buf)
       end
 
@@ -426,7 +428,7 @@ return {
         local rustywind_cwd = root_file({
           "tailwind.config.js",
           "tailwind.config.cjs",
-        })(get_ctx("rustywind", bufnr))
+        })({}, get_ctx("rustywind", bufnr))
 
         if rustywind_cwd then
           table.insert(formatters, "rustywind")
@@ -519,6 +521,8 @@ return {
   {
     "j-hui/fidget.nvim",
 
+    version = "*",
+
     event = { "LspAttach" },
 
     dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -527,6 +531,11 @@ return {
       progress = {
         ignore_done_already = true,
         ignore = { "null-ls" },
+      },
+      notification = {
+        window = {
+          winblend = 100,
+        },
       },
     },
   },

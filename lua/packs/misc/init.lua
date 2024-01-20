@@ -34,7 +34,7 @@ return {
         vim.fn["skkeleton#config"]({
           eggLikeNewline = true,
           keepState = true,
-          userJisyo = Path:new(require("constants.paths").data_dir)
+          userDictionary = Path:new(require("constants.paths").data_dir)
             :joinpath("skkeleton")
             :absolute(),
         })

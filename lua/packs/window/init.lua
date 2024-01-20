@@ -11,6 +11,8 @@ return {
   {
     "mrjones2014/smart-splits.nvim",
 
+    version = "*",
+
     config = function()
       require("smart-splits").setup({
         resize_mode = {

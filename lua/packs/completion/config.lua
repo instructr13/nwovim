@@ -13,10 +13,7 @@ function M.cmp_opts()
     border = "rounded",
   })
 
-  window_config.col_offset = -5
-
-  -- Set highlight for the copilot kind icon
-  vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
+  window_config.col_offset = -4
 
   local function has_words_before()
     if vim.bo.buftype == "prompt" then
@@ -54,8 +51,37 @@ function M.cmp_opts()
     },
   })
 
+  local cmdline_mapping = cmp.mapping.preset.cmdline({
+    ["<Tab>"] = {
+      c = function(_)
+        if cmp.visible() then
+          if #cmp.get_entries() == 1 then
+            cmp.confirm({ select = true })
+          else
+            cmp.select_next_item()
+          end
+        else
+          cmp.complete()
+          if #cmp.get_entries() == 1 then
+            cmp.confirm({ select = true })
+          end
+        end
+      end,
+    },
+    ["<CR>"] = cmp.mapping(function(fallback)
+      if cmp.visible() and cmp.get_active_entry() then
+        cmp.confirm({
+          behavior = cmp.ConfirmBehavior.Replace,
+          select = false,
+        })
+      else
+        fallback()
+      end
+    end, { "c" }),
+  })
+
   cmp.setup.cmdline({ "/", "?" }, {
-    mapping = cmp.mapping.preset.cmdline(),
+    mapping = cmdline_mapping,
     sources = cmp.config.sources({
       { name = "nvim_lsp_document_symbol" },
     }, {
@@ -66,23 +92,26 @@ function M.cmp_opts()
     },
   })
 
-  cmp.setup.cmdline({ ":" }, {
-    mapping = cmp.mapping.preset.cmdline({
-      ["<CR>"] = cmp.mapping(function(fallback)
-        if cmp.visible() and cmp.get_active_entry() then
-          cmp.confirm({
-            behavior = cmp.ConfirmBehavior.Replace,
-            select = false,
-          })
-        else
-          fallback()
-        end
-      end, { "c" }),
-    }),
+  cmp.setup.cmdline(":", {
+    enabled = function()
+      local disabled = {
+        IncRename = true,
+      }
+
+      local cmd = vim.fn.getcmdline():match("eS+")
+
+      return not disabled[cmd] or cmp.close()
+    end,
+    mapping = cmdline_mapping,
     sources = cmp.config.sources({
-      { name = "async_path" },
+      {
+        name = "async_path",
+      },
     }, {
       { name = "cmdline" },
+      option = {
+        ignore_cmds = { "e", "edit", "!", "Man" },
+      },
     }),
   })
 
@@ -130,13 +159,26 @@ function M.cmp_opts()
       format = function(entry, vim_item)
         vim_item.kind = kind[vim_item.kind] or vim_item.kind
 
+        if entry:get_completion_item().detail == "Emmet Abbreviation" then
+          vim_item.kind = " "
+        end
+
+        if vim.tbl_contains({ "path", "async_path" }, entry.source.name) then
+          local icon, hl_group = require("nvim-web-devicons").get_icon(
+            entry:get_completion_item().label
+          )
+
+          if icon then
+            vim_item.kind = icon
+            vim_item.kind_hl_group = hl_group
+
+            return vim_item
+          end
+        end
+
         -- Code from max397574/ignis-nvim
         local word = entry:get_insert_text()
         local item = entry.completion_item
-
-        if item.insertTextFormat == types.lsp.InsertTextFormat.Snippet then
-          word = vim.lsp.util.parse_snippet(word)
-        end
 
         word = utils_str.oneline(word)
 

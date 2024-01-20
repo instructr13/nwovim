@@ -25,7 +25,7 @@ return {
 
       vim.api.nvim_create_autocmd("FileType", {
         group = group,
-        pattern = "typescript",
+        pattern = "javascript,javascriptreact,typescript,typescriptreact",
         desc = "Setup deno or tsserver",
         callback = function(args)
           local bufnr = args.buf
@@ -267,5 +267,36 @@ return {
         capabilities = require("lsp.capabilities").make_capabilities(),
       }
     end,
+  },
+  {
+    "edKotinsky/Arduino.nvim",
+
+    commit = "38559b1",
+
+    ft = "arduino",
+
+    dependencies = {
+      "mason.nvim",
+    },
+
+    init = function()
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "ArduinoFqbnReset",
+        callback = function()
+          vim.cmd.LspRestart("arduino_language_server")
+        end,
+      })
+    end,
+
+    opts = function()
+      return {
+        clangd = require("mason-core.path").bin_prefix("clangd"),
+      }
+    end,
+  },
+  {
+    "MrPicklePinosaur/typst-conceal.vim",
+
+    ft = "typst",
   },
 }
