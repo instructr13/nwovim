@@ -34,6 +34,7 @@ return {
         vim.fn["skkeleton#config"]({
           eggLikeNewline = true,
           keepState = true,
+          globalDictionaries = { "/usr/share/skk/SKK-JISYO.L" },
           userDictionary = Path:new(require("constants.paths").data_dir)
             :joinpath("skkeleton")
             :absolute(),

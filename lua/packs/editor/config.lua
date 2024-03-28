@@ -109,10 +109,12 @@ end
 
 function M.matchup_setup()
   vim.g.matchup_matchparen_offscreen = {
-    method = "scrolloff",
+    method = "popup",
   }
 
-  vim.g.matchup_matchparen_defferred = 1
+  vim.g.matchup_matchparen_deferred = 1
+  vim.g.matchup_surround_enabled = 1
+  vim.g.matchup_override_vimtex = 1
 end
 
 function M.spider_setup()

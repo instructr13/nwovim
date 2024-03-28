@@ -8,6 +8,26 @@ return {
       "kevinhwang91/promise-async",
     },
 
+    init = function()
+      local keymap = require("utils.keymap").omit("append", { "n" }, "z")
+
+      keymap("R", function()
+        require("ufo").openAllFolds()
+      end, "Open All Folds")
+
+      keymap("M", function()
+        require("ufo").closeAllFolds()
+      end, "Close All Folds")
+
+      keymap("r", function()
+        require("ufo").openFoldsExceptKinds()
+      end, "Open Folds Except Kinds")
+
+      keymap("m", function()
+        require("ufo").closeFoldsWith()
+      end, "Close Current Fold Level")
+    end,
+
     opts = {
       preview = {
         win_config = {
@@ -15,7 +35,10 @@ return {
           winblend = 0,
         },
       },
-      close_fold_kinds = { "comment", "imports" },
+      close_fold_kinds_for_ft = {
+        default = { "comment", "imports" },
+        c = { "comment", "region" },
+      },
       fold_virt_text_handler = function(
         virtual_text,
         lnum,

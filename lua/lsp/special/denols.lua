@@ -5,7 +5,7 @@ local utils = require("utils.lsp")
 local M = {}
 
 function M.is_deno_fmt_available()
-  local vscode_config = require("neoconf").get().vscode
+  local vscode_config = require("neoconf").get().vscode or {}
 
   if
     vscode_config.editor

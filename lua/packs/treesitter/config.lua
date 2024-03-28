@@ -45,9 +45,6 @@ function M.treesitter()
     matchup = { -- It is in lua/packs/editor
       enable = true,
     },
-    context_commentstring = {
-      enable = not vim.g.vscode,
-    },
     --[[
     textsubjects = {
       enable = true,

@@ -146,9 +146,7 @@ return {
             sources = {
               builtins.code_actions.gitsigns,
               builtins.code_actions.gitrebase,
-              builtins.code_actions.impl, -- Go
               builtins.code_actions.refactoring,
-              builtins.hover.dictionary,
               builtins.hover.printenv,
             },
           }
@@ -174,15 +172,6 @@ return {
       on_references_result = function()
         vim.cmd("Trouble lsp_references")
       end,
-    },
-  },
-  {
-    "seblj/nvim-lsp-extras",
-
-    event = { "User NormalFile" },
-
-    opts = {
-      signature = false,
     },
   },
   {
@@ -222,7 +211,6 @@ return {
       )
 
       return {
-        vt_position = "textwidth",
         implementation = { enable = true },
         text_format = function(symbol)
           local result = {}
@@ -582,5 +570,54 @@ return {
         code_action = "<F4>",
       },
     },
+  },
+  {
+    "lewis6991/hover.nvim",
+
+    event = { "User NormalFile" },
+
+    opts = function()
+      vim.keymap.set("n", "K", function()
+        if require("ufo").peekFoldedLinesUnderCursor() then
+          return
+        end
+
+        require("hover").hover()
+      end, { desc = "hover.nvim" })
+
+      vim.keymap.set(
+        "n",
+        "gK",
+        require("hover").hover_select,
+        { desc = "hover.nvim (select)" }
+      )
+      vim.keymap.set("n", "<C-p>", function()
+        require("hover").hover_switch("previous")
+      end, { desc = "hover.nvim (previous source)" })
+      vim.keymap.set("n", "<C-n>", function()
+        require("hover").hover_switch("next")
+      end, { desc = "hover.nvim (next source)" })
+
+      -- Mouse support
+      vim.keymap.set(
+        "n",
+        "<MouseMove>",
+        require("hover").hover_mouse,
+        { desc = "hover.nvim (mouse)" }
+      )
+
+      return {
+        init = function()
+          require("hover.providers.lsp")
+          require("hover.providers.gh")
+          require("hover.providers.gh_user")
+          require("hover.providers.man")
+          require("hover.providers.dictionary")
+        end,
+        preview_opts = {
+          border = "rounded",
+        },
+      }
+    end,
   },
 }

@@ -92,7 +92,7 @@ return {
   {
     "andymass/vim-matchup",
 
-    event = { "User NormalFile" },
+    event = { "BufReadPost" },
 
     init = function()
       C.matchup_setup()
@@ -118,7 +118,13 @@ return {
     end,
 
     dependencies = {
-      "JoosepAlviste/nvim-ts-context-commentstring",
+      {
+        "JoosepAlviste/nvim-ts-context-commentstring",
+
+        enabled = not vim.g.vscode,
+
+        opts = true,
+      },
     },
   },
   {
@@ -318,5 +324,23 @@ return {
     dependencies = { "j-hui/fidget.nvim" },
 
     opts = {},
+  },
+  {
+    "NvChad/nvim-colorizer.lua",
+
+    opts = {
+      filetypes = {
+        "*",
+        cmp_docs = {
+          always_update = true,
+        },
+      },
+      user_default_options = {
+        css_fn = true,
+        mode = "virtualtext",
+        tailwind = true,
+        sass = { enable = true },
+      },
+    },
   },
 }

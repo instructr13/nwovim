@@ -176,8 +176,6 @@ function M.setup()
   vim.opt.conceallevel = 2
 
   vim.opt.linespace = 8
-  vim.opt.guifont =
-    "CommitMono,UDEV Gothic NFLG:h10:#e-subpixelantialias:#h-none"
 
   vim.opt.splitkeep = "screen"
 

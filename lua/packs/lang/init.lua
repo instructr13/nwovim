@@ -2,6 +2,8 @@ local Path = require("plenary.path")
 
 local C = require("packs.lang.config")
 
+local is_windows = require("utils.os").is_windows
+local is_linux = require("utils.os").is_linux
 local join_paths = require("utils.paths").join_paths
 local keymap = require("utils.keymap").keymap
 
@@ -127,83 +129,69 @@ return {
   },
   -- Rust
   {
-    "simrat39/rust-tools.nvim",
+    "mrcjkb/rustaceanvim",
 
-    lazy = true,
+    ft = "rust",
 
     dependencies = {
       "mason.nvim",
     },
 
     init = function()
-      vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup(
-          "rust_tools_config",
-          { clear = true }
-        ),
-        pattern = "rust",
-        desc = "Setup rust-tools",
-        once = true,
-        callback = function()
-          require("rust-tools") -- Load
+      vim.g.rustaceanvim = function()
+        local extension_path = Path:new(
+          require("mason-registry").get_package("codelldb"):get_install_path(),
+          "extension"
+        )
 
-          vim.schedule(function()
-            vim.cmd("LspStart rust-analyzer")
-          end)
-        end,
-      })
-    end,
+        local codelldb_path = extension_path:joinpath("adapter", "codelldb")
 
-    opts = function()
-      local extension_path = join_paths(
-        require("mason-registry").get_package("codelldb"):get_install_path(),
-        "extension"
-      )
+        local liblldb_path = extension_path:joinpath("lldb", "lib", "liblldb")
 
-      local codelldb_path = join_paths(extension_path, "adapter", "codelldb")
+        if is_windows then
+          codelldb_path = Path:new(tostring(codelldb_path) .. ".exe")
+          liblldb_path = Path:new(tostring(liblldb_path) .. ".dll")
+        else
+          liblldb_path =
+            Path:new(tostring(liblldb_path) .. (is_linux and ".so" or ".dylib"))
+        end
 
-      local liblldb_path =
-        join_paths(extension_path, "lldb", "lib", "liblldb.so")
+        local cfg = require("rustaceanvim.config")
 
-      return {
-        dap = {
-          adapter = require("rust-tools.dap").get_codelldb_adapter(
-            codelldb_path,
-            liblldb_path
-          ),
-        },
-        server = {
-          on_attach = function(client, buffer)
-            -- Hover actions
-            keymap(
-              "n",
-              "<F5>",
-              require("rust-tools").debuggables.debuggables,
-              "Debugger: Start",
-              { buffer = buffer }
-            )
+        return {
+          dap = {
+            adapter = cfg.get_codelldb_adapter(
+              tostring(codelldb_path),
+              tostring(liblldb_path)
+            ),
+          },
+          server = {
+            on_attach = function(client, buffer)
+              -- Hover actions
+              keymap(
+                "n",
+                "<F5>",
+                require("rustaceanvim.commands.debuggables").debuggables,
+                "Debugger: Start",
+                { buffer = buffer }
+              )
 
-            require("lsp.on_attach")(client, buffer)
-          end,
-          capabilities = require("lsp.capabilities").make_capabilities(),
-          settings = {
-            ["rust-analyzer"] = {
-              checkOnSave = {
-                command = "clippy",
+              require("lsp.on_attach")(client, buffer)
+            end,
+            capabilities = require("lsp.capabilities").make_capabilities(),
+            settings = {
+              ["rust-analyzer"] = {
+                checkOnSave = {
+                  command = "clippy",
+                },
               },
             },
+            tools = {
+              executor = require("rustaceanvim.executors").toggleterm,
+            },
           },
-        },
-        tools = {
-          executor = require("rust-tools.executors").toggleterm,
-          hover_actions = {
-            auto_focus = true,
-          },
-          inlay_hints = {
-            auto = false,
-          },
-        },
-      }
+        }
+      end
     end,
   },
   -- Flutter
@@ -295,8 +283,13 @@ return {
     end,
   },
   {
-    "MrPicklePinosaur/typst-conceal.vim",
+    "lervag/vimtex",
 
-    ft = "typst",
+    ft = "tex",
+
+    init = function()
+      vim.g.vimtex_syntax_enabled = 0
+      vim.g.vimtex_syntax_conceal_disable = 1
+    end,
   },
 }

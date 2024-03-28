@@ -47,8 +47,11 @@ end
 
 function M.statusline()
   local heirline = require("heirline")
+  local components = require("heirline-components.all")
   local conditions = require("heirline.conditions")
   local utils = require("heirline.utils")
+
+  components.init.subscribe_to_events()
 
   local palette = require("catppuccin.palettes").get_palette()
 
@@ -73,7 +76,9 @@ function M.statusline()
     git_change = utils.get_highlight("diffChanged").fg,
   })
 
-  heirline.load_colors(colors)
+  heirline.load_colors(
+    vim.tbl_extend("force", colors, components.hl.get_colors())
+  )
 
   local statusline = {
     hl = {
@@ -89,42 +94,7 @@ function M.statusline()
 
   local Left = {}
 
-  local LSPActive = {
-    condition = function()
-      return not conditions.buffer_matches({
-        buftype = { "nofile", "quickfix", "help", "terminal", "prompt" },
-      })
-    end,
-
-    provider = function()
-      local ok, copilot = pcall(require, "copilot_status")
-
-      if ok then
-        return " " .. copilot.status_string() .. " "
-      end
-
-      return "   "
-    end,
-
-    on_click = {
-      callback = function()
-        vim.defer_fn(function()
-          vim.cmd("LspInfo")
-        end, 100)
-      end,
-      name = "heirline_lspinfo",
-    },
-
-    hl = function()
-      if conditions.lsp_attached() then
-        return { fg = "bg", bg = "green", bold = true }
-      end
-
-      return { fg = "surface1", bg = "mantle" }
-    end,
-  }
-
-  Left = utils.insert(Left, LSPActive)
+  table.insert(Left, components.component.mode())
 
   local function get_diagnostic_object(severity)
     local diagnostics = vim.diagnostic.get(0, { severity = severity })
@@ -148,57 +118,6 @@ function M.statusline()
     return arrow
   end
 
-  local FileInformationBlock = {
-    condition = function()
-      return vim.bo.buftype == ""
-    end,
-    init = function(self)
-      self.filetype = vim.bo.filetype
-    end,
-  }
-
-  local FileIcon = {
-    condition = function()
-      return not conditions.buffer_matches({
-        buftype = { "nofile", "quickfix", "help", "terminal" },
-      })
-    end,
-
-    init = function(self)
-      local filetype = self.filetype
-
-      self.icon, self.icon_color =
-        require("nvim-web-devicons").get_icon_color_by_filetype(
-          filetype,
-          { default = true }
-        )
-    end,
-
-    provider = function(self)
-      local right_separator = self.filetype ~= "" and " " or ""
-
-      return " " .. self.icon and (self.icon .. right_separator)
-    end,
-
-    hl = function(self)
-      return {
-        fg = self.icon_color,
-      }
-    end,
-  }
-
-  local FileType = {
-    update = "OptionSet",
-
-    condition = function(self)
-      return self.filetype ~= "" and vim.bo.buftype == ""
-    end,
-
-    provider = function(self)
-      return string.gsub(" " .. self.filetype, "%W%l", string.upper):sub(2)
-    end,
-  }
-
   local FileFlags = {
     condition = function(self)
       return self.filetype ~= "" and vim.bo.buftype == ""
@@ -207,7 +126,7 @@ function M.statusline()
     {
       update = "BufModifiedSet",
 
-      provider = "  ",
+      provider = " ",
       hl = function()
         local fg = vim.bo.modified and "green" or "surface1"
 
@@ -227,16 +146,20 @@ function M.statusline()
     },
   }
 
-  FileInformationBlock = utils.insert(
-    FileInformationBlock,
-    Space,
-    FileIcon,
-    FileType,
-    FileFlags,
-    { provider = "%<" }
+  Left = utils.insert(
+    Left,
+    components.component.file_info({
+      file_icon = { -- if set, displays a icon depending the current filetype.
+        padding = { left = 0, right = 1 },
+      },
+      filetype = {
+        padding = { right = 1 },
+      },
+      surround = false,
+      file_read_only = false,
+    }),
+    FileFlags
   )
-
-  Left = utils.insert(Left, FileInformationBlock)
 
   local QuickFixBlock = {
     condition = function()
@@ -485,34 +408,27 @@ function M.statusline()
       Space,
     },
     {
+      condition = function(self)
+        return self.hints > 0
+      end,
       provider = function(self)
         return self.hint_icon .. self.hints
       end,
-      hl = function(self)
-        local fg = self.hints > 0 and "diag_hint" or "surface1"
-
-        return { fg = fg }
-      end,
+      hl = { fg = "diag_hint" },
 
       {
-        condition = function(self)
-          return self.hints > 0
+        provider = function(self)
+          return create_arrow(self.hint_lnum)
         end,
 
-        {
-          provider = function(self)
-            return create_arrow(self.hint_lnum)
-          end,
+        hl = { fg = "diag_dark_hint" },
+      },
+      {
+        provider = function(self)
+          return self.hint_lnum
+        end,
 
-          hl = { fg = "diag_dark_hint" },
-        },
-        {
-          provider = function(self)
-            return self.hint_lnum
-          end,
-
-          hl = { fg = "diag_hint" },
-        },
+        hl = { fg = "diag_hint" },
       },
       {
         provider = " ",
@@ -750,17 +666,59 @@ function M.statusline()
 
   local Right = {}
 
-  local DAPMessages = {
+  local LSPActive = {
     condition = function()
-      local session = require("dap").session()
-      return session ~= nil
+      return not conditions.buffer_matches({
+        buftype = { "nofile", "quickfix", "help", "terminal", "prompt" },
+      })
     end,
 
     provider = function()
-      return " " .. require("dap").status() .. " "
+      local ok, copilot = pcall(require, "copilot_status")
+
+      if ok then
+        return copilot.status_string()
+      end
+
+      return ""
     end,
 
-    hl = "Debug",
+    on_click = {
+      callback = function()
+        vim.defer_fn(function()
+          vim.cmd("LspInfo")
+        end, 100)
+      end,
+      name = "heirline_lspinfo",
+    },
+
+    hl = function()
+      if conditions.lsp_attached() then
+        return { fg = "text", bg = "mantle" }
+      end
+
+      return { fg = "surface1", bg = "mantle" }
+    end,
+  }
+
+  Right = utils.insert(Right, LSPActive)
+
+  local DAPMessages = {
+    condition = function()
+      local session = require("dap").session()
+
+      return session ~= nil
+    end,
+
+    Separator,
+
+    {
+      provider = function()
+        return " " .. require("dap").status() .. " "
+      end,
+
+      hl = "Debug",
+    },
   }
 
   Right = utils.insert(Right, DAPMessages)

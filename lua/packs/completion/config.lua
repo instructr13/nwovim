@@ -13,6 +13,12 @@ function M.cmp_opts()
     border = "rounded",
   })
 
+  vim.api.nvim_set_hl(
+    0,
+    "CmpItemMenu",
+    { fg = "#595D70", bg = "NONE", italic = true }
+  )
+
   window_config.col_offset = -4
 
   local function has_words_before()
@@ -119,13 +125,20 @@ function M.cmp_opts()
     enabled = function()
       return vim.bo.buftype ~= "prompt" or require("cmp_dap").is_dap_buffer()
     end,
+    confirm_opts = {
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = false,
+    },
     snippet = {
       expand = function(args)
         require("luasnip").lsp_expand(args.body)
       end,
     },
     window = {
-      completion = window_config,
+      completion = {
+        col_offset = -3,
+        side_padding = 0,
+      },
       documentation = window_config,
     },
     sorting = {
@@ -157,6 +170,8 @@ function M.cmp_opts()
         cmp.ItemField.Menu,
       },
       format = function(entry, vim_item)
+        local kind_text = vim_item.kind
+
         vim_item.kind = kind[vim_item.kind] or vim_item.kind
 
         if entry:get_completion_item().detail == "Emmet Abbreviation" then
@@ -169,11 +184,20 @@ function M.cmp_opts()
           )
 
           if icon then
-            vim_item.kind = icon
+            vim_item.kind = " " .. icon
             vim_item.kind_hl_group = hl_group
 
             return vim_item
           end
+        end
+
+        vim_item.menu = "    " .. kind_text
+
+        if
+          entry.completion_item.detail ~= nil
+          and entry.completion_item.detail ~= ""
+        then
+          vim_item.menu = "    " .. entry.completion_item.detail
         end
 
         -- Code from max397574/ignis-nvim
@@ -198,6 +222,7 @@ function M.cmp_opts()
         end
 
         vim_item.abbr = word
+        vim_item.kind = " " .. vim_item.kind
 
         return vim_item
       end,
@@ -218,10 +243,12 @@ function M.cmp_opts()
         end
       end, { "i", "s" }),
       ["<Tab>"] = cmp.mapping(function(fallback)
-        if cmp.visible() and has_words_before() then
-          cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+        if cmp.visible() then
+          cmp.select_next_item()
         elseif luasnip.expand_or_jumpable() then
           luasnip.expand_or_jump()
+        elseif has_words_before() then
+          cmp.complete()
         else
           fallback()
         end
@@ -239,23 +266,32 @@ function M.cmp_opts()
       ["<C-f>"] = cmp.mapping.scroll_docs(4),
       ["<C-e>"] = cmp.mapping.abort(),
       ["<C-Space>"] = cmp.mapping.complete(),
-      ["<CR>"] = cmp.mapping({
-        i = function(fallback)
-          if cmp.visible() and cmp.get_active_entry() then
-            cmp.confirm({
-              behavior = cmp.ConfirmBehavior.Replace,
-              select = false,
-            })
-          else
-            fallback()
+      ["<CR>"] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          local opts = {}
+
+          local function is_insert_mode()
+            return vim.api.nvim_get_mode().mode:sub(1, 1) == "i"
           end
-        end,
-        s = cmp.mapping.confirm({ select = true }),
-        c = cmp.mapping.confirm({
-          behavior = cmp.ConfirmBehavior.Replace,
-          select = true,
-        }),
-      }),
+
+          if is_insert_mode() then
+            opts.behavior = cmp.ConfirmBehavior.Insert
+          end
+
+          local entry = cmp.get_selected_entry()
+
+          if entry and entry.source.name == "copilot" then
+            opts.behavior = cmp.ConfirmBehavior.Replace
+            opts.select = true
+          end
+
+          if cmp.confirm(opts) then
+            return
+          end
+        end
+
+        fallback()
+      end),
     },
     sources = cmp.config.sources({
       { name = "copilot", group_index = 2 },

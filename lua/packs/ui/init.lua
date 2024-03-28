@@ -115,13 +115,7 @@ return {
 
     opts = {
       select = {
-        enabled = true,
-
-        nui = {
-          border = {
-            style = "rounded",
-          },
-        },
+        enabled = vim.fn.has("NVIM-0.10") == 0,
       },
       input = {
         enabled = true,
@@ -178,7 +172,13 @@ return {
 
     event = "BufEnter",
 
-    dependencies = {},
+    dependencies = {
+      {
+        "Zeioth/heirline-components.nvim",
+
+        version = "*",
+      },
+    },
 
     config = function()
       C.statusline()
@@ -335,62 +335,66 @@ return {
       "nvim-tree/nvim-web-devicons",
     },
 
-    opts = {
-      general = {
-        update_events = {
-          win = {
-            "CursorMoved",
-            "CursorMovedI",
-            "WinEnter",
+    opts = function()
+      vim.ui.select = require("dropbar.utils.menu").select
+
+      return {
+        general = {
+          update_events = {
+            win = {
+              "CursorMoved",
+              "CursorMovedI",
+              "WinEnter",
+            },
           },
         },
-      },
-      menu = {
-        keymaps = {
-          ["<ESC>"] = function()
-            local menu = require("dropbar.utils").menu.get_current()
+        menu = {
+          keymaps = {
+            ["<ESC>"] = function()
+              local menu = require("dropbar.utils").menu.get_current()
 
-            if not menu then
-              return
-            end
+              if not menu then
+                return
+              end
 
-            menu:close()
-          end,
-        },
-      },
-      sources = {
-        terminal = {
-          name = function(buf)
-            local name = vim.api.nvim_buf_get_name(buf)
-
-            local term =
-              select(2, require("toggleterm.terminal").identify(name))
-
-            if term then
-              return term.display_name or term.name
-            else
-              return name
-            end
-          end,
-        },
-      },
-      icons = {
-        enable = true,
-        kinds = {
-          symbols = require("constants.lsp.kind"),
-        },
-        ui = {
-          bar = {
-            separator = "  ",
-            extends = "…",
-          },
-          menu = {
-            separator = " ",
-            indicator = "",
+              menu:close()
+            end,
           },
         },
-      },
-    },
+        sources = {
+          terminal = {
+            name = function(buf)
+              local name = vim.api.nvim_buf_get_name(buf)
+
+              local term =
+                select(2, require("toggleterm.terminal").identify(name))
+
+              if term then
+                return term.display_name or term.name
+              else
+                return name
+              end
+            end,
+          },
+        },
+        icons = {
+          enable = true,
+          kinds = {
+            symbols = require("constants.lsp.kind"),
+          },
+          ui = {
+            bar = {
+              separator = "  ",
+              extends = "…",
+            },
+            menu = {
+              separator = " ",
+              indicator = "",
+            },
+          },
+        },
+      }
+    end,
   },
   {
     -- Winbar <= NVIM-0.9

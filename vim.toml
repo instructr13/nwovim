@@ -56,4 +56,3 @@ type = "any"
 
 [[assert.stub.args]]
 type = "any"
-

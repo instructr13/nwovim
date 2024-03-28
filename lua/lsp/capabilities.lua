@@ -29,16 +29,6 @@ function M.register(client, buffer, _cap)
 
   local cap = _cap or client.server_capabilities
 
-  if cap["hoverProvider"] then
-    keymap("K", function()
-      local winid = require("ufo").peekFoldedLinesUnderCursor()
-
-      if not winid then
-        vim.lsp.buf.hover()
-      end
-    end, "Hover")
-  end
-
   if cap["renameProvider"] then
     keymap("gr", function()
       vim.lsp.buf.rename()
