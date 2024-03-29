@@ -176,6 +176,14 @@ return {
       {
         "Zeioth/heirline-components.nvim",
 
+        opts = {
+          icons = {
+            GitAdd = "",
+            GitChange = "",
+            GitDelete = "",
+          },
+        },
+
         version = "*",
       },
     },

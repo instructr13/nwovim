@@ -47,11 +47,11 @@ end
 
 function M.statusline()
   local heirline = require("heirline")
-  local components = require("heirline-components.all")
+  local lib = require("heirline-components.all")
   local conditions = require("heirline.conditions")
   local utils = require("heirline.utils")
 
-  components.init.subscribe_to_events()
+  lib.init.subscribe_to_events()
 
   local palette = require("catppuccin.palettes").get_palette()
 
@@ -76,9 +76,7 @@ function M.statusline()
     git_change = utils.get_highlight("diffChanged").fg,
   })
 
-  heirline.load_colors(
-    vim.tbl_extend("force", colors, components.hl.get_colors())
-  )
+  heirline.load_colors(vim.tbl_extend("force", colors, lib.hl.get_colors()))
 
   local statusline = {
     hl = {
@@ -94,7 +92,7 @@ function M.statusline()
 
   local Left = {}
 
-  table.insert(Left, components.component.mode())
+  table.insert(Left, lib.component.mode())
 
   local function get_diagnostic_object(severity)
     local diagnostics = vim.diagnostic.get(0, { severity = severity })
@@ -148,7 +146,7 @@ function M.statusline()
 
   Left = utils.insert(
     Left,
-    components.component.file_info({
+    lib.component.file_info({
       file_icon = { -- if set, displays a icon depending the current filetype.
         padding = { left = 0, right = 1 },
       },
@@ -449,6 +447,24 @@ function M.statusline()
 
   Left = utils.insert(Left, Diagnostics)
 
+  local GitBranch = {
+    condition = conditions.is_git_repo,
+
+    provider = " ",
+
+    hl = { fg = "orange" },
+
+    {
+      provider = function()
+        return vim.b.gitsigns_status_dict.head
+      end,
+
+      hl = { fg = "text" },
+    },
+  }
+
+  Left = utils.insert(Left, GitBranch, lib.component.git_diff())
+
   local TerminalBlock = {
     condition = function()
       return vim.bo.buftype == "terminal"
@@ -550,6 +566,8 @@ function M.statusline()
 
   local Center = {}
 
+  Center = utils.insert(Center, lib.component.cmd_info())
+
   local WorkDirIcon = {
     provider = " ",
 
@@ -590,81 +608,13 @@ function M.statusline()
 
   Center = utils.insert(Center, WorkDirIcon, WorkDir)
 
-  local GitIcon = {
-    condition = conditions.is_git_repo,
-
-    provider = " ",
-
-    hl = { fg = "orange" },
-  }
-
-  local GitBranch = {
-    condition = conditions.is_git_repo,
-
-    provider = function()
-      return vim.b.gitsigns_status_dict.head
-    end,
-  }
-
-  local GitDiff = {
-    condition = conditions.is_git_repo,
-
-    init = function(self)
-      self.status_dict = vim.b.gitsigns_status_dict
-    end,
-
-    {
-      init = function(self)
-        self.added = self.status_dict.added or 0
-      end,
-
-      condition = function(self)
-        return self.added or 0 > 0
-      end,
-
-      provider = function(self)
-        return " " .. self.added
-      end,
-
-      hl = { fg = "git_add" },
-    },
-    {
-      init = function(self)
-        self.changed = self.status_dict.changed or 0
-      end,
-
-      condition = function(self)
-        return self.changed or 0 > 0
-      end,
-
-      provider = function(self)
-        return " " .. self.changed
-      end,
-
-      hl = { fg = "git_change" },
-    },
-    {
-      init = function(self)
-        self.removed = self.status_dict.removed or 0
-      end,
-
-      condition = function(self)
-        return self.removed or 0 > 0
-      end,
-
-      provider = function(self)
-        return " " .. self.removed
-      end,
-
-      hl = { fg = "git_del" },
-    },
-  }
-
-  Center = utils.insert(Center, Space, GitIcon, GitBranch, GitDiff)
+  Center = utils.insert(Center, lib.component.virtual_env())
 
   statusline = utils.insert(statusline, Center, Align)
 
   local Right = {}
+
+  Right = utils.insert(Right, lib.component.compiler_state(), Space, Separator)
 
   local LSPActive = {
     condition = function()
@@ -791,7 +741,13 @@ function M.statusline()
     },
   }
 
-  Right = utils.insert(Right, FileSize)
+  Right = utils.insert(
+    Right,
+    FileSize,
+    lib.component.file_encoding({
+      file_format = false,
+    })
+  )
 
   local Ruler = {
     update = { "CursorMoved", "TextChanged" },
