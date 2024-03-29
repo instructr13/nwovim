@@ -193,6 +193,14 @@ function M.register(client, buffer, _cap)
 
       vim.lsp.inlay_hint.enable(buffer, value)
     end, "Toggle inlay hints")
+
+    vim.api.nvim_create_autocmd({ "LspDetach" }, {
+      buffer = buffer,
+      desc = "Disable inlay hints",
+      callback = function()
+        vim.lsp.inlay_hint.enable(buffer, false)
+      end,
+    })
   end
 end
 

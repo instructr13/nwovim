@@ -546,16 +546,11 @@ return {
     opts = {},
   },
   {
-    "hinell/lsp-timeout.nvim",
+    "zeioth/garbage-day.nvim",
 
-    event = { "LspAttach" },
+    event = "LspAttach",
 
-    init = function()
-      vim.g.lspTimeoutConfig = {
-        stopTimeout = 1000 * 60 * 10,
-        startTimeout = 0,
-      }
-    end,
+    opts = {},
   },
   {
     "luckasRanarison/clear-action.nvim",
